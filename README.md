@@ -1,12 +1,12 @@
 # Requirements
-- Ruby 3.0.2
+- Ruby 3.1.2
 
 # Setup
 
-### 1.Install Ruby version 3.0.2 using rbenv 
+### 1.Install Ruby version 3.1.2 using rbenv 
 
 ```bash
-rbenv install 3.0.2
+rbenv install 3.1.2
 ```
 
 rbenv installation instruction:
