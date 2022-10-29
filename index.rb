@@ -3,9 +3,10 @@ require 'date'
 
 class CarsManagement
   def find_the_car
-    load_file
-    ask_user
-    ask_sort
+    @cars_array = YAML.load(File.read('db.yml'))
+    request_filters
+    apply_filters
+    check_is_empty
     find_car
     sort
     output
@@ -13,37 +14,42 @@ class CarsManagement
 
   private
 
-  def load_file
-    @cars_array = YAML.load(File.read('db.yml'))
-  end
-
-  def ask_user
+  def request_filters
     puts 'Please select search rules.'
-
     puts 'Please choose make:'
     @make = gets.chomp
-    @make = 'skip' if @make == ''
     puts 'Please choose model:'
     @model = gets.chomp
-    @model = 'skip' if @model == ''
     puts 'Please choose year_from:'
     @year_from = gets.chomp
-    @year_from = 'skip' if @year_from == ''
     puts 'Please choose year_to:'
     @year_to = gets.chomp
-    @year_to = 'skip' if @year_to == ''
     puts 'Please choose price_from:'
     @price_from = gets.chomp
-    @price_from = 'skip' if @price_from == ''
     puts 'Please choose price_to:'
     @price_to = gets.chomp
-    @price_to = 'skip' if @price_to == ''
   end
 
-  def ask_sort
+  def apply_filters
     puts 'Please choose sort option (date_added|price):'
-    pre_sort = gets.chomp
-    case pre_sort
+    @pre_sort = gets.chomp
+    puts 'Please choose sort direction(desc|asc):'
+    @pre_direction = gets.chomp
+  end
+
+  def check_is_empty
+    def is_empty(word)
+      word = 'skip' if word == ''
+      return word
+    end
+
+    @make = is_empty(@make)
+    @model = is_empty(@model)
+    @year_from = is_empty(@year_from)
+    @year_to = is_empty(@year_to)
+    @price_from = is_empty(@price_from)
+    @price_to = is_empty(@price_to)
+    case @pre_sort
     when 'date_added'
       @sort = 'date_added'
     when 'price'
@@ -51,9 +57,7 @@ class CarsManagement
     else
       @sort = 'date_added'
     end
-    puts 'Please choose sort direction(desc|asc):'
-    pre_direction = gets.chomp
-    case pre_direction
+    case @pre_direction
     when 'desc'
       @direction = 'desc'
     when 'asc'
@@ -62,70 +66,101 @@ class CarsManagement
       @direction = 'desc'
     end
   end
-  
+
   def find_car
+    def check_make(x)
+      if @make == 'skip'
+        return true
+      else
+        return @cars_array[x]['make'] == @make
+      end
+    end
+
+    def check_model(x)
+      if @model == 'skip'
+        return true
+      else
+        return @cars_array[x]['model'] == @model
+      end
+    end
+
+    def check_year_from(x)
+      if @year_from == 'skip'
+        return true
+      else
+        return @cars_array[x]['year'] >= @year_from.to_i
+      end
+    end
+
+    def check_year_to(x)
+      if @year_to == 'skip'
+        return true
+      else
+        return @cars_array[x]['year'] <= @year_to.to_i
+      end
+    end
+
+    def check_price_from(x)
+      if @price_from == 'skip'
+        return true
+      else
+        return @cars_array[x]['price'] >= @price_from.to_i
+      end
+    end
+
+    def check_price_to(x)
+      if @price_to == 'skip'
+        return true
+      else
+        return @cars_array[x]['price'] <= @price_to.to_i
+      end
+    end
+
     @sorted_array = []
+
     @cars_array.each_index do |x|
-      if if @make == 'skip'
-           true
-         else
-           @cars_array[x]['make'] == @make
-         end && if @model == 'skip'
-                  true
-                else
-                  @cars_array[x]['model'] == @model
-                end && if @year_from == 'skip'
-                         true
-                       else
-                         @cars_array[x]['year'] >= @year_from.to_i
-                       end && if @year_to == 'skip'
-                                true
-                              else
-                                @cars_array[x]['year'] <= @year_to.to_i
-                              end && if @price_from == 'skip'
-                                       true
-                                     else
-                                       @cars_array[x]['price'] >= @price_from.to_i
-                                     end && if @price_to == 'skip'
-                                              true
-                                            else
-                                              @cars_array[x]['price'] <= @price_to.to_i
-                                            end
+      if check_make(x) && check_model(x) && check_year_from(x) && check_year_to(x) && check_price_from(x) && check_price_to(x)
         @sorted_array.append(@cars_array[x])
       end
     end
   end
 
   def sort
-    case @sort
-    when 'price'
+    def price_sort
       if @direction == 'asc'
         @sorted_array.sort_by! { |i| i['price'] }
       else
         @sorted_array.sort_by! { |i| -i['price'] }
       end
-    when 'date_added'
+    end
 
+    def date_added_sort
       if @direction == 'asc'
         @sorted_array.sort_by! { |i| DateTime.strptime(i['date_added'], '%d/%m/%y').strftime('%Q').to_i }
       else
         @sorted_array.sort_by! { |i| -DateTime.strptime(i['date_added'], '%d/%m/%y').strftime('%Q').to_i }
       end
+    end
 
+    case @sort
+    when 'price'
+      price_sort
+    when 'date_added'
+      date_added_sort
     end
   end
 
   def output
-    @sorted_array.each_index do |i|
+    @sorted_array.each do |array|
       puts '----------------------------------'
-      puts "Id: #{@sorted_array[i]['id']}"
-      puts "Make: #{@sorted_array[i]['make']}"
-      puts "Model: #{@sorted_array[i]['model']}"
-      puts "Year: #{@sorted_array[i]['year']}"
-      puts "Odometer: #{@sorted_array[i]['odometer']}"
-      puts "Price: #{@sorted_array[i]['price']}"
-      puts "Description: #{@sorted_array[i]['description']}"
-      puts "Date added: #{@sorted_array[i]['date_added']}"
+      puts "Id: #{array['id']}"
+      puts "Make: #{array['make']}"
+      puts "Model: #{array['model']}"
+      puts "Year: #{array['year']}"
+      puts "Odometer: #{array['odometer']}"
+      puts "Price: #{array['price']}"
+      puts "Description: #{array['description']}"
+      puts "Date added: #{array['date_added']}"
       puts '----------------------------------'
     end
   end
