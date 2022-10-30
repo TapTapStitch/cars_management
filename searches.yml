@@ -1,3 +1,4 @@
 ---
-total_quantity: 0
-requests_quantity: 0
+- id: 1
+  total_quantity: 9
+  requests_quantity: 0

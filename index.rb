@@ -131,16 +131,49 @@ class CarsManagement
     end
   end
 
+  def find_requests_id
+    @requests_id = ''
+    @result_array.each do |record|
+      @requests_id += record['id'].to_s
+    end
+  end
+
+  def is_record_exists?
+    @exists = false
+    @exists_quantity = 1
+    @searches_hash.each do |record|
+      if record['id'] == @requests_id
+        @exists = true
+        record['number'] += 1
+        @exists_quantity = record['number']
+      end
+    end
+  end
+
+  def find_requests_quantity
+    if !(@exists)
+      @Request_quantity = { 'id' => '', 'number' => '' }
+      @Request_quantity['id'] = @requests_id
+      @Request_quantity['number'] = 1
+      @searches_hash[@searches_hash.length] = @Request_quantity
+    end
+  end
+
   def calculate_searches
-    @searches_hash['total_quantity'] += @result_array.length
-    output_searches
+    @searches_hash[0]['total_quantity'] += @result_array.length
+    find_requests_id
+    if !(@requests_id == '')
+      is_record_exists?
+      find_requests_quantity
+      output_searches
+    end
   end
 
   def output_searches
     puts '----------------------------------'
     puts 'Statistic:'
-    puts "Total Quantity:#{@searches_hash['total_quantity']}"
-    puts "Requests quantity:#{'Must be here'}"
+    puts "Total Quantity: #{@searches_hash[0]['total_quantity']}"
+    puts "Requests quantity: #{@exists_quantity}"
     puts '----------------------------------'
   end
 
