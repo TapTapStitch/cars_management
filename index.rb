@@ -54,13 +54,13 @@ class CarsManagement
   BY_PRICE = 'price'
   ALLOWED_SORT_OPTIONS = [BY_DATE_ADDED, BY_PRICE].freeze
 
-  DIRECTION1 = 'asc'
-  DIRECTION2 = 'desc'
-  ALLOWED_DIRECTON_OPTIONS = [DIRECTION1, DIRECTION2].freeze
+  DIRECTION_ASC = 'asc'
+  DIRECTION_DESC = 'desc'
+  ALLOWED_DIRECTON_OPTIONS = [DIRECTION_ASC, DIRECTION_DESC].freeze
 
   def prepare_sort_options
     @sort = ALLOWED_SORT_OPTIONS.include?(@pre_sort) ? @pre_sort : BY_DATE_ADDED
-    @direction = ALLOWED_DIRECTON_OPTIONS.include?(@pre_direction) ? @pre_direction : DIRECTION2
+    @direction = ALLOWED_DIRECTON_OPTIONS.include?(@pre_direction) ? @pre_direction : DIRECTION_DESC
   end
 
   def prepare_filters
@@ -97,15 +97,11 @@ class CarsManagement
   end
 
   def match_by_filter?(car_record)
-    if check_make(car_record['make']) && check_model(car_record['model']) && check_year_from(car_record['year']) && check_year_to(car_record['year']) && check_price_from(car_record['price']) && check_price_to(car_record['price'])
-      return true
-    end
+    check_make(car_record['make']) && check_model(car_record['model']) && check_year_from(car_record['year']) && check_year_to(car_record['year']) && check_price_from(car_record['price']) && check_price_to(car_record['price'])
   end
 
   def find_car
-
     @result_array = []
-
     @cars_array.each do |car_record|
       @result_array << car_record if match_by_filter?(car_record)
     end
@@ -116,23 +112,18 @@ class CarsManagement
   end
 
   def price_sort
-
     @result_array.sort_by! { |car| "#{direction}#{car['price']}".to_i }
   end
 
   def date_added_sort
-    if @direction == 'asc'
-      @result_array.sort_by! { |i| DateTime.strptime(i['date_added'], '%d/%m/%y').strftime('%Q').to_i }
-    else
-      @result_array.sort_by! { |i| -DateTime.strptime(i['date_added'], '%d/%m/%y').strftime('%Q').to_i }
-    end
+    @result_array.sort_by! { |t| "#{direction}#{DateTime.strptime(t['date_added'],'%d/%m/%y').strftime('%Q').to_i}".to_i }
   end
 
   def sort
     case @sort
-    when 'price'
+    when BY_PRICE
       price_sort
-    when 'date_added'
+    when BY_DATE_ADDED
       date_added_sort
     end
   end
