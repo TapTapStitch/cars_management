@@ -4,12 +4,14 @@ require 'date'
 class CarsManagement
   def find_the_car
     @cars_array = YAML.load(File.read('db.yml'))
+    @searches_hash = YAML.load(File.read('searches.yml'))
     read_filters_from_user
     read_sort_from_user
     prepare_filters
     find_car
     sort
     output
+    File.open('searches.yml', 'w') { |f| f.write @searches_hash.to_yaml }
   end
 
   private
@@ -105,6 +107,7 @@ class CarsManagement
     @cars_array.each do |car_record|
       @result_array << car_record if match_by_filter?(car_record)
     end
+    calculate_searches
   end
 
   def direction
@@ -116,7 +119,7 @@ class CarsManagement
   end
 
   def date_added_sort
-    @result_array.sort_by! { |t| "#{direction}#{DateTime.strptime(t['date_added'],'%d/%m/%y').strftime('%Q').to_i}".to_i }
+    @result_array.sort_by! { |t| "#{direction}#{DateTime.strptime(t['date_added'], '%d/%m/%y').strftime('%Q').to_i}".to_i }
   end
 
   def sort
@@ -126,6 +129,19 @@ class CarsManagement
     when BY_DATE_ADDED
       date_added_sort
     end
+  end
+
+  def calculate_searches
+    @searches_hash['total_quantity'] += @result_array.length
+    output_searches
+  end
+
+  def output_searches
+    puts '----------------------------------'
+    puts 'Statistic:'
+    puts "Total Quantity:#{@searches_hash['total_quantity']}"
+    puts "Requests quantity:#{'Must be here'}"
+    puts '----------------------------------'
   end
 
   def output
