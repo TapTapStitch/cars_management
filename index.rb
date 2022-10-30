@@ -38,7 +38,7 @@ class CarsManagement
   end
 
   def is_empty(word)
-    return word.empty? ? 'skip' : word
+    word.empty? ? 'skip' : word
   end
 
   def prepare_request_filters
