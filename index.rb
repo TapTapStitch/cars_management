@@ -72,32 +72,32 @@ class CarsManagement
     filter_value == 'skip' || filter_condition
   end
 
-  def check_make(x)
-    prepare_filter_value(@make, @cars_array[x]['make'] == @make)
+  def check_make(filter)
+    prepare_filter_value(@make, filter == @make)
   end
 
-  def check_model(x)
-    prepare_filter_value(@model, @cars_array[x]['model'] == @model)
+  def check_model(filter)
+    prepare_filter_value(@model, filter == @model)
   end
 
-  def check_year_from(x)
-    prepare_filter_value(@year_from, @cars_array[x]['year'] >= @year_from.to_i)
+  def check_year_from(filter)
+    prepare_filter_value(@year_from, filter >= @year_from.to_i)
   end
 
-  def check_year_to(x)
-    prepare_filter_value(@year_to, @cars_array[x]['year'] <= @year_to.to_i)
+  def check_year_to(filter)
+    prepare_filter_value(@year_to, filter <= @year_to.to_i)
   end
 
-  def check_price_from(x)
-    prepare_filter_value(@price_from, @cars_array[x]['price'] >= @price_from.to_i)
+  def check_price_from(filter)
+    prepare_filter_value(@price_from, filter >= @price_from.to_i)
   end
 
-  def check_price_to(x)
-    prepare_filter_value(@price_to, @cars_array[x]['price'] <= @price_to.to_i)
+  def check_price_to(filter)
+    prepare_filter_value(@price_to, filter <= @price_to.to_i)
   end
 
-  def match_by_filter?
-    if check_make(x) && check_model(x) && check_year_from(x) && check_year_to(x) && check_price_from(x) && check_price_to(x)
+  def match_by_filter?(car_record)
+    if check_make(car_record['make']) && check_model(car_record['model']) && check_year_from(car_record['year']) && check_year_to(car_record['year']) && check_price_from(car_record['price']) && check_price_to(car_record['price'])
       return true
     end
   end
@@ -106,10 +106,8 @@ class CarsManagement
 
     @result_array = []
 
-    @cars_array.each_index do |x|
-      if check_make(x) && check_model(x) && check_year_from(x) && check_year_to(x) && check_price_from(x) && check_price_to(x)
-        @result_array.append(@cars_array[x])
-      end
+    @cars_array.each do |car_record|
+      @result_array << car_record if match_by_filter?(car_record)
     end
   end
 
