@@ -2,27 +2,28 @@ require 'yaml'
 require 'date'
 
 class CarsManagement
-  private def file_read_write(method)
-    if method == 'read'
-      @cars_array = YAML.load(File.read('db.yml'))
-      @searches_hash = YAML.load(File.read('searches.yml'))
-    elsif method == 'write'
-      File.open('searches.yml', 'w') { |f| f.write @searches_hash.to_yaml }
-    end
-  end
 
   def find_the_car
-    file_read_write('read')
+    file_read
     read_filters_from_user
     read_sort_from_user
     prepare_filters
     find_car
     sort
     output
-    file_read_write('write')
+    file_write
   end
 
   private
+
+  def file_read
+    @cars_array = YAML.load(File.read('db.yml'))
+    @searches_hash = YAML.load(File.read('searches.yml'))
+  end
+
+  def file_write
+    File.open('searches.yml', 'w') { |f| f.write @searches_hash.to_yaml }
+  end
 
   def read_filters_from_user
     puts 'Please select search rules.'
