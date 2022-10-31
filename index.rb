@@ -2,16 +2,24 @@ require 'yaml'
 require 'date'
 
 class CarsManagement
+  private def file_read_write(method)
+    if method == 'read'
+      @cars_array = YAML.load(File.read('db.yml'))
+      @searches_hash = YAML.load(File.read('searches.yml'))
+    elsif method == 'write'
+      File.open('searches.yml', 'w') { |f| f.write @searches_hash.to_yaml }
+    end
+  end
+
   def find_the_car
-    @cars_array = YAML.load(File.read('db.yml'))
-    @searches_hash = YAML.load(File.read('searches.yml'))
+    file_read_write('read')
     read_filters_from_user
     read_sort_from_user
     prepare_filters
     find_car
     sort
     output
-    File.open('searches.yml', 'w') { |f| f.write @searches_hash.to_yaml }
+    file_read_write('write')
   end
 
   private
@@ -138,7 +146,7 @@ class CarsManagement
     end
   end
 
-  def is_record_exists?
+  def record_exists?
     @exists = false
     @exists_quantity = 1
     @searches_hash.each do |record|
@@ -151,7 +159,7 @@ class CarsManagement
   end
 
   def find_requests_quantity
-    if !(@exists)
+    unless @exists
       @Request_quantity = { 'id' => '', 'number' => '' }
       @Request_quantity['id'] = @requests_id
       @Request_quantity['number'] = 1
@@ -162,8 +170,8 @@ class CarsManagement
   def calculate_searches
     @searches_hash[0]['total_quantity'] += @result_array.length
     find_requests_id
-    if !(@requests_id == '')
-      is_record_exists?
+    unless @requests_id == ''
+      record_exists?
       find_requests_quantity
       output_searches
     end
