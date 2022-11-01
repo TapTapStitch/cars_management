@@ -112,8 +112,12 @@ class CarsManagement
 
   def find_car
     @result_array = []
+    @total_quantity = 0
     @cars_array.each do |car_record|
       @result_array << car_record if match_by_filter?(car_record)
+    end
+    @result_array.each do |car_record|
+      @total_quantity += 1
     end
     calculate_searches
   end
@@ -160,21 +164,21 @@ class CarsManagement
 
   def find_requests_quantity
     unless @exists
-      @Request_quantity = { 'id' => '', 'number' => '', 'request_make' => '', 'request_model' => '', 'request_year_from' => '', 'request_year_to' => '', 'request_price_from' => '', 'request_price_to' => '' }
-      @Request_quantity['id'] = @requests_id
-      @Request_quantity['number'] = 1
-      @Request_quantity['request_make'] = @make
-      @Request_quantity['request_model'] = @model
-      @Request_quantity['request_year_from'] = @year_from
-      @Request_quantity['request_year_to'] = @year_to
-      @Request_quantity['request_price_from'] = @price_from
-      @Request_quantity['request_price_to'] = @price_to
-      @searches_hash[@searches_hash.length] = @Request_quantity
+      @request_quantity = { 'id' => '', 'number' => '','total_quantity'=>'', 'request_make' => '', 'request_model' => '', 'request_year_from' => '', 'request_year_to' => '', 'request_price_from' => '', 'request_price_to' => '' }
+      @request_quantity['id'] = @requests_id
+      @request_quantity['number'] = 1
+      @request_quantity['total_quantity'] = @total_quantity
+      @request_quantity['request_make'] = @make
+      @request_quantity['request_model'] = @model
+      @request_quantity['request_year_from'] = @year_from
+      @request_quantity['request_year_to'] = @year_to
+      @request_quantity['request_price_from'] = @price_from
+      @request_quantity['request_price_to'] = @price_to
+      @searches_hash[@searches_hash.length] = @request_quantity
     end
   end
 
   def calculate_searches
-    @searches_hash[0]['total_quantity'] += @result_array.length
     find_requests_id
     unless @requests_id == ''
       record_exists?
@@ -186,7 +190,7 @@ class CarsManagement
   def output_searches
     puts '----------------------------------'
     puts 'Statistic:'
-    puts "Total Quantity: #{@searches_hash[0]['total_quantity']}"
+    puts "Total Quantity: #{@total_quantity}"
     puts "Requests quantity: #{@exists_quantity}"
     puts '----------------------------------'
   end
