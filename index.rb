@@ -161,9 +161,15 @@ class CarsManagement
 
   def find_requests_quantity
     unless @exists
-      @Request_quantity = { 'id' => '', 'number' => '' }
+      @Request_quantity = { 'id' => '', 'number' => '', 'request_make' => '', 'request_model' => '', 'request_year_from' => '', 'request_year_to' => '', 'request_price_from' => '', 'request_price_to' => '' }
       @Request_quantity['id'] = @requests_id
       @Request_quantity['number'] = 1
+      @Request_quantity['request_make'] = @make
+      @Request_quantity['request_model'] = @model
+      @Request_quantity['request_year_from'] = @year_from
+      @Request_quantity['request_year_to'] = @year_to
+      @Request_quantity['request_price_from'] = @price_from
+      @Request_quantity['request_price_to'] = @price_to
       @searches_hash[@searches_hash.length] = @Request_quantity
     end
   end
