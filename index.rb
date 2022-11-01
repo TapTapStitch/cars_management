@@ -2,7 +2,6 @@ require 'yaml'
 require 'date'
 
 class CarsManagement
-
   def find_the_car
     file_read
     read_filters_from_user
