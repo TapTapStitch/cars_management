@@ -3,16 +3,26 @@ require 'date'
 
 class CarsManagement
   def find_the_car
-    @cars_array = YAML.load(File.read('db.yml'))
+    file_read
     read_filters_from_user
     read_sort_from_user
     prepare_filters
     find_car
     sort
-    output
+    print_results
+    file_write
   end
 
   private
+
+  def file_read
+    @cars_array = YAML.load(File.read('db.yml'))
+    @searches_array = YAML.load(File.read('searches.yml'))
+  end
+
+  def file_write
+    File.open('searches.yml', 'w') { |f| f.write @searches_array.to_yaml }
+  end
 
   def read_filters_from_user
     puts 'Please select search rules.'
@@ -105,6 +115,7 @@ class CarsManagement
     @cars_array.each do |car_record|
       @result_array << car_record if match_by_filter?(car_record)
     end
+    calculate_searches
   end
 
   def direction
@@ -116,7 +127,7 @@ class CarsManagement
   end
 
   def date_added_sort
-    @result_array.sort_by! { |t| "#{direction}#{DateTime.strptime(t['date_added'],'%d/%m/%y').strftime('%Q').to_i}".to_i }
+    @result_array.sort_by! { |t| "#{direction}#{DateTime.strptime(t['date_added'], '%d/%m/%y').strftime('%Q').to_i}".to_i }
   end
 
   def sort
@@ -128,7 +139,84 @@ class CarsManagement
     end
   end
 
-  def output
+  def check_request_make(filter)
+    filter['request_make'] == @make
+  end
+
+  def check_request_model(filter)
+    filter['request_model'] == @model
+  end
+
+  def check_request_year_from(filter)
+    filter['request_year_from'] == @year_from
+  end
+
+  def check_request_year_to(filter)
+    filter['request_year_to'] == @year_to
+  end
+
+  def check_request_price_from(filter)
+    filter['request_price_from'] == @price_from
+  end
+
+  def check_request_price_to(filter)
+    filter['request_price_to'] == @price_to
+  end
+
+  def check_request_match_by_filter(filter)
+    check_request_make(filter) && check_request_model(filter) && check_request_year_from(filter) && check_request_year_to(filter) && check_request_price_from(filter) && check_request_price_to(filter)
+  end
+
+  def record_exists?
+    @exists = false
+    @request_quantity = 1
+    @searches_array.each do |record|
+      if check_request_match_by_filter(record)
+        @exists = true
+        record['requests_quantity'] += 1
+        @request_quantity = record['requests_quantity']
+      end
+    end
+  end
+  def insert_search_request_statistic
+    @searches_array << @search_request
+  end
+  def create_search_request_statistic
+    @search_request = {}
+    @search_request['total_quantity'] = @total_quantity
+    @search_request['requests_quantity'] = 1
+    @search_request['request_make'] = @make
+    @search_request['request_model'] = @model
+    @search_request['request_year_from'] = @year_from
+    @search_request['request_year_to'] = @year_to
+    @search_request['request_price_from'] = @price_from
+    @search_request['request_price_to'] = @price_to
+  end
+
+  def find_total_quantity
+    @total_quantity = @result_array.length
+  end
+
+  def calculate_searches
+    unless find_total_quantity == 0
+      record_exists?
+      unless @exists
+        create_search_request_statistic
+        insert_search_request_statistic
+      end
+      print_statistic
+    end
+  end
+
+  def print_statistic
+    puts '----------------------------------'
+    puts 'Statistic:'
+    puts "Total Quantity: #{@total_quantity}"
+    puts "Requests quantity: #{@request_quantity}"
+    puts '----------------------------------'
+  end
+
+  def print_results
     @result_array.each do |record|
       puts '----------------------------------'
       puts "Id: #{record['id']}"
