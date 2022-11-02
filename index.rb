@@ -9,7 +9,7 @@ class CarsManagement
     prepare_filters
     find_car
     sort
-    output
+    print_results
     file_write
   end
 
@@ -17,11 +17,11 @@ class CarsManagement
 
   def file_read
     @cars_array = YAML.load(File.read('db.yml'))
-    @searches_hash = YAML.load(File.read('searches.yml'))
+    @searches_array = YAML.load(File.read('searches.yml'))
   end
 
   def file_write
-    File.open('searches.yml', 'w') { |f| f.write @searches_hash.to_yaml }
+    File.open('searches.yml', 'w') { |f| f.write @searches_array.to_yaml }
   end
 
   def read_filters_from_user
@@ -170,7 +170,7 @@ class CarsManagement
   def record_exists?
     @exists = false
     @request_quantity = 1
-    @searches_hash.each do |record|
+    @searches_array.each do |record|
       if check_request_match_by_filter(record)
         @exists = true
         record['requests_quantity'] += 1
@@ -178,8 +178,10 @@ class CarsManagement
       end
     end
   end
-
-  def create_hash
+  def insert_search_request_statistic
+    @searches_array << @search_request
+  end
+  def create_search_request_statistic
     @search_request = {}
     @search_request['total_quantity'] = @total_quantity
     @search_request['requests_quantity'] = 1
@@ -189,7 +191,6 @@ class CarsManagement
     @search_request['request_year_to'] = @year_to
     @search_request['request_price_from'] = @price_from
     @search_request['request_price_to'] = @price_to
-    @searches_hash[@searches_hash.length] = @search_request
   end
 
   def find_total_quantity
@@ -200,13 +201,14 @@ class CarsManagement
     unless find_total_quantity == 0
       record_exists?
       unless @exists
-        create_hash
+        create_search_request_statistic
+        insert_search_request_statistic
       end
-      output_searches
+      print_statistic
     end
   end
 
-  def output_searches
+  def print_statistic
     puts '----------------------------------'
     puts 'Statistic:'
     puts "Total Quantity: #{@total_quantity}"
@@ -214,7 +216,7 @@ class CarsManagement
     puts '----------------------------------'
   end
 
-  def output
+  def print_results
     @result_array.each do |record|
       puts '----------------------------------'
       puts "Id: #{record['id']}"
