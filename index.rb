@@ -1,8 +1,5 @@
-require 'yaml'
-require 'date'
-require 'i18n'
-require 'terminal-table'
-require 'colorize'
+# frozen_string_literal: true
+require_relative 'gems.rb'
 
 class CarsManagement
   def find_the_car
