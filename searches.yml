@@ -1,6 +1,6 @@
 ---
 - total_quantity: 2
-  requests_quantity: 35
+  requests_quantity: 36
   request_make: Audi
   request_model: skip
   request_year_from: skip
@@ -8,7 +8,7 @@
   request_price_from: skip
   request_price_to: skip
 - total_quantity: 14
-  requests_quantity: 2
+  requests_quantity: 3
   request_make: skip
   request_model: skip
   request_year_from: skip

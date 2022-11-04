@@ -27,25 +27,25 @@ class CarsManagement
   end
 
   def read_filters_from_user
-    puts I18n.t(:select_rules)
-    puts I18n.t(:select_make)
+    puts I18n.t(:select_rules).colorize(:blue)
+    puts I18n.t(:select_make).colorize(:blue)
     @make = gets.chomp
-    puts I18n.t(:select_model)
+    puts I18n.t(:select_model).colorize(:blue)
     @model = gets.chomp
-    puts I18n.t(:select_year_from)
+    puts I18n.t(:select_year_from).colorize(:blue)
     @year_from = gets.chomp
-    puts I18n.t(:select_year_to)
+    puts I18n.t(:select_year_to).colorize(:blue)
     @year_to = gets.chomp
-    puts I18n.t(:select_price_from)
+    puts I18n.t(:select_price_from).colorize(:blue)
     @price_from = gets.chomp
-    puts I18n.t(:select_price_to)
+    puts I18n.t(:select_price_to).colorize(:blue)
     @price_to = gets.chomp
   end
 
   def read_sort_from_user
-    puts I18n.t(:select_sort_option)
+    puts I18n.t(:select_sort_option).colorize(:blue)
     @pre_sort = gets.chomp
-    puts I18n.t(:select_sort_direction)
+    puts I18n.t(:select_sort_direction).colorize(:blue)
     @pre_direction = gets.chomp
   end
 
@@ -216,13 +216,13 @@ class CarsManagement
     print_statistic_row = []
     print_statistic_row << [I18n.t(:total_quantity).colorize(:light_yellow), @total_quantity.to_s.colorize(:light_yellow)]
     print_statistic_row << [I18n.t(:request_quantity).colorize(:light_yellow), @request_quantity.to_s.colorize(:light_yellow)]
-    statistic_table = Terminal::Table.new :title => I18n.t(:statistic).colorize(:blue), :rows => print_statistic_row
+    statistic_table = Terminal::Table.new :title => I18n.t(:statistic).colorize(:light_yellow), :rows => print_statistic_row
     puts(statistic_table)
   end
 
   def print_results
+    print_results_row = []
     @result_array.each do |record|
-      print_results_row = []
       print_results_row << [I18n.t(:id).colorize(:light_yellow), record['id'].to_s.colorize(:light_yellow)]
       print_results_row << [I18n.t(:make).colorize(:light_yellow), record['make'].to_s.colorize(:light_yellow)]
       print_results_row << [I18n.t(:model).colorize(:light_yellow), record['model'].to_s.colorize(:light_yellow)]
@@ -230,9 +230,10 @@ class CarsManagement
       print_results_row << [I18n.t(:price).colorize(:light_yellow), record['price'].to_s.colorize(:light_yellow)]
       print_results_row << [I18n.t(:description).colorize(:light_yellow), record['description'].to_s.colorize(:light_yellow)]
       print_results_row << [I18n.t(:date).colorize(:light_yellow), record['date_added'].to_s.colorize(:light_yellow)]
-      resaults_table = Terminal::Table.new :rows => print_results_row
-      puts(resaults_table)
+      print_results_row << :separator
     end
+    resaults_table = Terminal::Table.new :rows => print_results_row
+    puts(resaults_table)
   end
 end
 
