@@ -1,5 +1,8 @@
 require 'yaml'
 require 'date'
+require 'i18n'
+require 'terminal-table'
+require 'colorize'
 
 class CarsManagement
   def find_the_car
@@ -18,6 +21,8 @@ class CarsManagement
   def file_read
     @cars_array = YAML.load(File.read('db.yml'))
     @searches_array = YAML.load(File.read('searches.yml'))
+    I18n.load_path << Dir[File.expand_path("locales") + "/*.yml"]
+    I18n.default_locale = :en # (note that `en` is already the default!)
   end
 
   def file_write
@@ -25,25 +30,25 @@ class CarsManagement
   end
 
   def read_filters_from_user
-    puts 'Please select search rules.'
-    puts 'Please choose make:'
+    puts I18n.t(:select_rules)
+    puts I18n.t(:select_make)
     @make = gets.chomp
-    puts 'Please choose model:'
+    puts I18n.t(:select_model)
     @model = gets.chomp
-    puts 'Please choose year_from:'
+    puts I18n.t(:select_year_from)
     @year_from = gets.chomp
-    puts 'Please choose year_to:'
+    puts I18n.t(:select_year_to)
     @year_to = gets.chomp
-    puts 'Please choose price_from:'
+    puts I18n.t(:select_price_from)
     @price_from = gets.chomp
-    puts 'Please choose price_to:'
+    puts I18n.t(:select_price_to)
     @price_to = gets.chomp
   end
 
   def read_sort_from_user
-    puts 'Please choose sort option (date_added|price):'
+    puts I18n.t(:select_sort_option)
     @pre_sort = gets.chomp
-    puts 'Please choose sort direction(desc|asc):'
+    puts I18n.t(:select_sort_direction)
     @pre_direction = gets.chomp
   end
 
@@ -178,9 +183,11 @@ class CarsManagement
       end
     end
   end
+
   def insert_search_request_statistic
     @searches_array << @search_request
   end
+
   def create_search_request_statistic
     @search_request = {}
     @search_request['total_quantity'] = @total_quantity
@@ -209,29 +216,28 @@ class CarsManagement
   end
 
   def print_statistic
-    puts '----------------------------------'
-    puts 'Statistic:'
-    puts "Total Quantity: #{@total_quantity}"
-    puts "Requests quantity: #{@request_quantity}"
-    puts '----------------------------------'
+    print_statistic_row = []
+    print_statistic_row << [I18n.t(:total_quantity).colorize(:light_yellow), @total_quantity.to_s.colorize(:light_yellow)]
+    print_statistic_row << [I18n.t(:request_quantity).colorize(:light_yellow), @request_quantity.to_s.colorize(:light_yellow)]
+    statistic_table = Terminal::Table.new :title => I18n.t(:statistic).colorize(:blue), :rows => print_statistic_row
+    puts(statistic_table)
   end
 
   def print_results
     @result_array.each do |record|
-      puts '----------------------------------'
-      puts "Id: #{record['id']}"
-      puts "Make: #{record['make']}"
-      puts "Model: #{record['model']}"
-      puts "Year: #{record['year']}"
-      puts "Odometer: #{record['odometer']}"
-      puts "Price: #{record['price']}"
-      puts "Description: #{record['description']}"
-      puts "Date added: #{record['date_added']}"
-      puts '----------------------------------'
+      print_results_row = []
+      print_results_row << [I18n.t(:id).colorize(:light_yellow), record['id'].to_s.colorize(:light_yellow)]
+      print_results_row << [I18n.t(:make).colorize(:light_yellow), record['make'].to_s.colorize(:light_yellow)]
+      print_results_row << [I18n.t(:model).colorize(:light_yellow), record['model'].to_s.colorize(:light_yellow)]
+      print_results_row << [I18n.t(:year).colorize(:light_yellow), record['year'].to_s.colorize(:light_yellow)]
+      print_results_row << [I18n.t(:price).colorize(:light_yellow), record['price'].to_s.colorize(:light_yellow)]
+      print_results_row << [I18n.t(:description).colorize(:light_yellow), record['description'].to_s.colorize(:light_yellow)]
+      print_results_row << [I18n.t(:date).colorize(:light_yellow), record['date_added'].to_s.colorize(:light_yellow)]
+      resaults_table = Terminal::Table.new :rows => print_results_row
+      puts(resaults_table)
     end
   end
 end
 
 cars = CarsManagement.new
-
 cars.find_the_car

@@ -1,6 +1,7 @@
 # Created by https://www.toptal.com/developers/gitignore/api/rubymine,visualstudio,node
 # Edit at https://www.toptal.com/developers/gitignore?templates=rubymine,visualstudio,node
 /.idea
+.ruby-gemset
 ### Node ###
 # Logs
 logs

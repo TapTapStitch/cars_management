@@ -1,6 +1,6 @@
 ---
 - total_quantity: 2
-  requests_quantity: 5
+  requests_quantity: 34
   request_make: Audi
   request_model: skip
   request_year_from: skip
@@ -8,7 +8,7 @@
   request_price_from: skip
   request_price_to: skip
 - total_quantity: 14
-  requests_quantity: 1
+  requests_quantity: 2
   request_make: skip
   request_model: skip
   request_year_from: skip
@@ -16,7 +16,7 @@
   request_price_from: skip
   request_price_to: skip
 - total_quantity: 2
-  requests_quantity: 1
+  requests_quantity: 2
   request_make: BMW
   request_model: skip
   request_year_from: skip
@@ -43,6 +43,22 @@
   requests_quantity: 2
   request_make: skip
   request_model: Passat
+  request_year_from: skip
+  request_year_to: skip
+  request_price_from: skip
+  request_price_to: skip
+- total_quantity: 1
+  requests_quantity: 1
+  request_make: Audi
+  request_model: A4
+  request_year_from: skip
+  request_year_to: skip
+  request_price_from: skip
+  request_price_to: skip
+- total_quantity: 2
+  requests_quantity: 1
+  request_make: skip
+  request_model: X5
   request_year_from: skip
   request_year_to: skip
   request_price_from: skip
