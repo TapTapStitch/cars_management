@@ -9,6 +9,7 @@ en:
   select_sort_option: 'Please choose sort option (date_added|price):'
   select_sort_direction: 'Please choose sort direction(desc|asc):'
   statistic: 'Statistic:'
+  results: 'Search results:'
   total_quantity: 'Total Quantity:'
   request_quantity: 'Requests quantity:'
   id: 'Id:'
