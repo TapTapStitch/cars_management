@@ -221,15 +221,7 @@ class CarsManagement
     end
     return exists
   end
-
-  def record_exists
-    @searches_array.each do |record|
-      if check_request_match_by_filter(record)
-
-      end
-    end
-  end
-
+  
   def insert_search_request_statistic
     @searches_array << @search_request
   end
