@@ -2,8 +2,9 @@
 
 class CarsManagement
   def find_the_car
-    read_language_from_user
+    language_input
     file_read
+    language_load
     read_filters_from_user
     read_sort_from_user
     prepare_filters
@@ -11,61 +12,87 @@ class CarsManagement
     sort
     print_results
     print_statistic
-    file_write
+    update_searches
   end
 
   private
 
+  BY_DATE_ADDED = 'date_added'
+  BY_PRICE = 'price'
+  ALLOWED_SORT_OPTIONS = [BY_DATE_ADDED, BY_PRICE].freeze
+
+  DIRECTION_ASC = 'asc'
+  DIRECTION_DESC = 'desc'
+  ALLOWED_DIRECTON_OPTIONS = [DIRECTION_ASC, DIRECTION_DESC].freeze
+
+  ALLOWED_LANGUAGES = %w[en ua].freeze
+  DEFAULT_LANGUAGE = :en
+
+  PATH_TO_DATABASE = 'database/db.yml'
+  PATH_TO_SEARCHES = 'database/searches.yml'
+
   def file_read
-    @cars_array = YAML.load(File.read('database/db.yml'))
-    @searches_array = YAML.load(File.read('database/searches.yml'))
+    @cars_array = YAML.load(File.read(PATH_TO_DATABASE))
+    @searches_array = YAML.load(File.read(PATH_TO_SEARCHES))
+  end
+
+  def language_load
     I18n.load_path << Dir[File.expand_path("locales") + "/*.yml"]
-    I18n.default_locale = @lang # (note that `en` is already the default!)
+    I18n.default_locale = @language # (note that `en` is already the default!)
   end
 
-  def file_write
-    File.open('database/searches.yml', 'w') { |f| f.write @searches_array.to_yaml }
+  def update_searches
+    File.open(PATH_TO_SEARCHES, 'w') { |f| f.write @searches_array.to_yaml }
   end
 
-  def find_language
-    case @lang
-    when 'en'
-      @lang = :en
-    when 'ua'
-      @lang = :ua
+  def initialize(default_language: DEFAULT_LANGUAGE)
+    @language = default_language
+  end
+
+  def assign_language
+    if ALLOWED_LANGUAGES.include?(@language_input)
+      @language = @language_input.to_sym
     else
       puts 'Default language is english'.colorize(:blue)
-      @lang = :en
     end
   end
 
-  def read_language_from_user
+  def language_input
+    initialize
     puts 'Chose language (en/ua)'.colorize(:blue)
-    @lang = gets.chomp
-    find_language
+    @language_input = read_input
+    assign_language
+  end
+
+  def print_message(translation_key, color = :blue)
+    puts I18n.t(translation_key).colorize(color)
+  end
+
+  def read_input
+    gets.chomp
   end
 
   def read_filters_from_user
-    puts I18n.t(:select_rules).colorize(:blue)
-    puts I18n.t(:select_make).colorize(:blue)
-    @make = gets.chomp
-    puts I18n.t(:select_model).colorize(:blue)
-    @model = gets.chomp
-    puts I18n.t(:select_year_from).colorize(:blue)
-    @year_from = gets.chomp
-    puts I18n.t(:select_year_to).colorize(:blue)
-    @year_to = gets.chomp
-    puts I18n.t(:select_price_from).colorize(:blue)
-    @price_from = gets.chomp
-    puts I18n.t(:select_price_to).colorize(:blue)
-    @price_to = gets.chomp
+    print_message(:select_rules)
+    print_message(:select_make)
+    @make = read_input
+    print_message(:select_model)
+    @model = read_input
+    print_message(:select_year_from)
+    @year_from = read_input
+    print_message(:select_year_to)
+    @year_to = read_input
+    print_message(:select_price_from)
+    @price_from = read_input
+    print_message(:select_price_to)
+    @price_to = read_input
   end
 
   def read_sort_from_user
-    puts I18n.t(:select_sort_option).colorize(:blue)
-    @pre_sort = gets.chomp
-    puts I18n.t(:select_sort_direction).colorize(:blue)
-    @pre_direction = gets.chomp
+    print_message(:select_sort_option)
+    @pre_sort = read_input
+    print_message(:select_sort_direction)
+    @pre_direction = read_input
   end
 
   def is_empty(word)
@@ -80,14 +107,6 @@ class CarsManagement
     @price_from = is_empty(@price_from)
     @price_to = is_empty(@price_to)
   end
-
-  BY_DATE_ADDED = 'date_added'
-  BY_PRICE = 'price'
-  ALLOWED_SORT_OPTIONS = [BY_DATE_ADDED, BY_PRICE].freeze
-
-  DIRECTION_ASC = 'asc'
-  DIRECTION_DESC = 'desc'
-  ALLOWED_DIRECTON_OPTIONS = [DIRECTION_ASC, DIRECTION_DESC].freeze
 
   def prepare_sort_options
     @sort = ALLOWED_SORT_OPTIONS.include?(@pre_sort) ? @pre_sort : BY_DATE_ADDED
@@ -189,17 +208,24 @@ class CarsManagement
   end
 
   def record_exists?
-    @exists = false
+    exists = false
     @request_quantity = 1
-    if @searches_array == nil
-      @searches_array = []
-    end
+    @searches_array ||= []
     @searches_array.each do |record|
       if check_request_match_by_filter(record)
-        @exists = true
+        exists = true
         record['requests_quantity'] += 1
         record['total_quantity'] = @total_quantity
         @request_quantity = record['requests_quantity']
+      end
+    end
+    return exists
+  end
+
+  def record_exists
+    @searches_array.each do |record|
+      if check_request_match_by_filter(record)
+
       end
     end
   end
@@ -225,37 +251,42 @@ class CarsManagement
   end
 
   def calculate_searches
-    unless find_total_quantity == 0
-      record_exists?
-      unless @exists
+    unless find_total_quantity.zero?
+      unless record_exists?
         create_search_request_statistic
         insert_search_request_statistic
       end
     end
   end
 
+  def statistic_table
+    statistic_row = []
+    statistic_row << [I18n.t(:total_quantity).colorize(:light_yellow), @total_quantity.to_s.colorize(:cyan)]
+    statistic_row << [I18n.t(:request_quantity).colorize(:light_yellow), @request_quantity.to_s.colorize(:cyan)]
+    statistic_table = Terminal::Table.new :title => I18n.t(:statistic).colorize(:light_yellow), :rows => statistic_row
+  end
+
   def print_statistic
-    print_statistic_row = []
-    print_statistic_row << [I18n.t(:total_quantity).colorize(:light_yellow), @total_quantity.to_s.colorize(:cyan)]
-    print_statistic_row << [I18n.t(:request_quantity).colorize(:light_yellow), @request_quantity.to_s.colorize(:cyan)]
-    statistic_table = Terminal::Table.new :title => I18n.t(:statistic).colorize(:light_yellow), :rows => print_statistic_row
     puts(statistic_table)
   end
 
-  def print_results
-    print_results_row = []
+  def results_table
+    results_row = []
     @result_array.each do |record|
-      print_results_row << [I18n.t(:id).colorize(:light_yellow), record['id'].to_s.colorize(:cyan)]
-      print_results_row << [I18n.t(:make).colorize(:light_yellow), record['make'].to_s.colorize(:cyan)]
-      print_results_row << [I18n.t(:model).colorize(:light_yellow), record['model'].to_s.colorize(:cyan)]
-      print_results_row << [I18n.t(:year).colorize(:light_yellow), record['year'].to_s.colorize(:cyan)]
-      print_results_row << [I18n.t(:price).colorize(:light_yellow), record['price'].to_s.colorize(:cyan)]
-      print_results_row << [I18n.t(:description).colorize(:light_yellow), record['description'].to_s.colorize(:cyan)]
-      print_results_row << [I18n.t(:date).colorize(:light_yellow), record['date_added'].to_s.colorize(:cyan)]
-      print_results_row << :separator
+      results_row << [I18n.t(:id).colorize(:light_yellow), record['id'].to_s.colorize(:cyan)]
+      results_row << [I18n.t(:make).colorize(:light_yellow), record['make'].to_s.colorize(:cyan)]
+      results_row << [I18n.t(:model).colorize(:light_yellow), record['model'].to_s.colorize(:cyan)]
+      results_row << [I18n.t(:year).colorize(:light_yellow), record['year'].to_s.colorize(:cyan)]
+      results_row << [I18n.t(:price).colorize(:light_yellow), record['price'].to_s.colorize(:cyan)]
+      results_row << [I18n.t(:description).colorize(:light_yellow), record['description'].to_s.colorize(:cyan)]
+      results_row << [I18n.t(:date).colorize(:light_yellow), record['date_added'].to_s.colorize(:cyan)]
+      results_row << :separator
     end
-    print_results_row.pop
-    resaults_table = Terminal::Table.new :title => I18n.t(:results).colorize(:light_yellow), :rows => print_results_row
-    puts(resaults_table)
+    results_row.pop
+    results_table = Terminal::Table.new :title => I18n.t(:results).colorize(:light_yellow), :rows => results_row
+  end
+
+  def print_results
+    puts(results_table)
   end
 end
