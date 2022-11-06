@@ -2,6 +2,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=rubymine,visualstudio,node
 /.idea
 .ruby-gemset
+gems.locked
 ### Node ###
 # Logs
 logs

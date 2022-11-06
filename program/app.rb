@@ -1,6 +1,24 @@
 # frozen_string_literal: true
 
 class CarsManagement
+  BY_DATE_ADDED = 'date_added'
+  BY_PRICE = 'price'
+  ALLOWED_SORT_OPTIONS = [BY_DATE_ADDED, BY_PRICE].freeze
+
+  DIRECTION_ASC = 'asc'
+  DIRECTION_DESC = 'desc'
+  ALLOWED_DIRECTON_OPTIONS = [DIRECTION_ASC, DIRECTION_DESC].freeze
+
+  ALLOWED_LANGUAGES = %w[en ua].freeze
+  DEFAULT_LANGUAGE = :en
+
+  PATH_TO_DATABASE = 'database/db.yml'
+  PATH_TO_SEARCHES = 'database/searches.yml'
+
+  def initialize(default_language: DEFAULT_LANGUAGE)
+    @language = default_language
+  end
+
   def find_the_car
     language_input
     file_read
@@ -17,20 +35,6 @@ class CarsManagement
 
   private
 
-  BY_DATE_ADDED = 'date_added'
-  BY_PRICE = 'price'
-  ALLOWED_SORT_OPTIONS = [BY_DATE_ADDED, BY_PRICE].freeze
-
-  DIRECTION_ASC = 'asc'
-  DIRECTION_DESC = 'desc'
-  ALLOWED_DIRECTON_OPTIONS = [DIRECTION_ASC, DIRECTION_DESC].freeze
-
-  ALLOWED_LANGUAGES = %w[en ua].freeze
-  DEFAULT_LANGUAGE = :en
-
-  PATH_TO_DATABASE = 'database/db.yml'
-  PATH_TO_SEARCHES = 'database/searches.yml'
-
   def file_read
     @cars_array = YAML.load(File.read(PATH_TO_DATABASE))
     @searches_array = YAML.load(File.read(PATH_TO_SEARCHES))
@@ -45,10 +49,6 @@ class CarsManagement
     File.open(PATH_TO_SEARCHES, 'w') { |f| f.write @searches_array.to_yaml }
   end
 
-  def initialize(default_language: DEFAULT_LANGUAGE)
-    @language = default_language
-  end
-
   def assign_language
     if ALLOWED_LANGUAGES.include?(@language_input)
       @language = @language_input.to_sym
@@ -58,7 +58,6 @@ class CarsManagement
   end
 
   def language_input
-    initialize
     puts 'Chose language (en/ua)'.colorize(:blue)
     @language_input = read_input
     assign_language
@@ -221,7 +220,7 @@ class CarsManagement
     end
     return exists
   end
-  
+
   def insert_search_request_statistic
     @searches_array << @search_request
   end
@@ -243,11 +242,9 @@ class CarsManagement
   end
 
   def calculate_searches
-    unless find_total_quantity.zero?
-      unless record_exists?
-        create_search_request_statistic
-        insert_search_request_statistic
-      end
+    if find_total_quantity.positive? && !record_exists?
+      create_search_request_statistic
+      insert_search_request_statistic
     end
   end
 
