@@ -1,6 +1,8 @@
 # Created by https://www.toptal.com/developers/gitignore/api/rubymine,visualstudio,node
 # Edit at https://www.toptal.com/developers/gitignore?templates=rubymine,visualstudio,node
 /.idea
+.ruby-gemset
+gems.locked
 ### Node ###
 # Logs
 logs
@@ -178,9 +180,9 @@ dist
 # .idea/artifacts
 # .idea/compiler.xml
 # .idea/jarRepositories.xml
-# .idea/modules.xml
+# .idea/app.xml
 # .idea/*.iml
-# .idea/modules
+# .idea/app
 # *.iml
 # *.ipr
 
@@ -224,7 +226,7 @@ fabric.properties
 # Comment Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-215987721
 
 # *.iml
-# modules.xml
+# app.xml
 # .idea/misc.xml
 # *.ipr
 
