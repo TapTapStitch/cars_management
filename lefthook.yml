@@ -1,9 +1,15 @@
 pre-push:
+  commands:
+    gems-audit:
+      tags: backend security
+      run: bundle audit
+
+pre-commit:
   parallel: true
   commands:
     rubocop:
-      tags: backend
-      run: bundle exec rubocop
-    rspec:
-      tags: rspec backend
-      run: bundle exec rspec --fail-fast
+      tags: backend style
+      glob: "*.rb"
+      run: bundle exec rubocop --force-exclusion {all_files}
+    bundler-leak:
+      run: bundle exec bundler-leak
