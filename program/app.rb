@@ -7,7 +7,7 @@ class CarsManagement
 
   DIRECTION_ASC = 'asc'
   DIRECTION_DESC = 'desc'
-  ALLOWED_DIRECTON_OPTIONS = [DIRECTION_ASC, DIRECTION_DESC].freeze
+  ALLOWED_DIRECTION_OPTIONS = [DIRECTION_ASC, DIRECTION_DESC].freeze
 
   ALLOWED_LANGUAGES = %w[en ua].freeze
   DEFAULT_LANGUAGE = :en
@@ -109,7 +109,7 @@ class CarsManagement
 
   def prepare_sort_options
     @sort = ALLOWED_SORT_OPTIONS.include?(@pre_sort) ? @pre_sort : BY_DATE_ADDED
-    @direction = ALLOWED_DIRECTON_OPTIONS.include?(@pre_direction) ? @pre_direction : DIRECTION_DESC
+    @direction = ALLOWED_DIRECTION_OPTIONS.include?(@pre_direction) ? @pre_direction : DIRECTION_DESC
   end
 
   def prepare_filters
