@@ -254,7 +254,7 @@ class CarsManagement # rubocop:disable Metrics/ClassLength
     statistic_row = []
     statistic_row << [I18n.t(:total_quantity).colorize(:light_yellow), @total_quantity.to_s.colorize(:cyan)]
     statistic_row << [I18n.t(:request_quantity).colorize(:light_yellow), @request_quantity.to_s.colorize(:cyan)]
-    statistic_table = Terminal::Table.new title: I18n.t(:statistic).colorize(:light_yellow), rows: statistic_row
+    Terminal::Table.new title: I18n.t(:statistic).colorize(:light_yellow), rows: statistic_row
   end
 
   def print_statistic
