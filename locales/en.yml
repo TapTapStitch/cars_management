@@ -19,4 +19,4 @@ en:
   odometer: 'Odometer:'
   price: 'Price:'
   description: 'Description:'
-  date: 'Date added:'
+  date_added: 'Date added:'

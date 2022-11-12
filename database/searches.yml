@@ -7,3 +7,11 @@
   request_year_to: skip
   request_price_from: skip
   request_price_to: skip
+- total_quantity: 2
+  requests_quantity: 3
+  request_make: Audi
+  request_model: skip
+  request_year_from: skip
+  request_year_to: skip
+  request_price_from: skip
+  request_price_to: skip

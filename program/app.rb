@@ -264,17 +264,13 @@ class CarsManagement # rubocop:disable Metrics/ClassLength
   def results_table
     results_row = []
     @result_array.each do |record|
-      results_row << [I18n.t(:id).colorize(:light_yellow), record['id'].to_s.colorize(:cyan)]
-      results_row << [I18n.t(:make).colorize(:light_yellow), record['make'].to_s.colorize(:cyan)]
-      results_row << [I18n.t(:model).colorize(:light_yellow), record['model'].to_s.colorize(:cyan)]
-      results_row << [I18n.t(:year).colorize(:light_yellow), record['year'].to_s.colorize(:cyan)]
-      results_row << [I18n.t(:price).colorize(:light_yellow), record['price'].to_s.colorize(:cyan)]
-      results_row << [I18n.t(:description).colorize(:light_yellow), record['description'].to_s.colorize(:cyan)]
-      results_row << [I18n.t(:date).colorize(:light_yellow), record['date_added'].to_s.colorize(:cyan)]
+      record.each do |key, value|
+        results_row << [I18n.t(key.to_sym).colorize(:light_yellow), value.to_s.colorize(:cyan)]
+      end
       results_row << :separator
     end
     results_row.pop
-    results_table = Terminal::Table.new title: I18n.t(:results).colorize(:light_yellow), rows: results_row
+    Terminal::Table.new title: I18n.t(:results).colorize(:light_yellow), rows: results_row
   end
 
   def print_results
