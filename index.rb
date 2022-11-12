@@ -1,6 +1,11 @@
 # frozen_string_literal: true
-require_relative 'program/gems.rb'
-require_relative 'program/app.rb'
+
+require 'yaml'
+require 'date'
+require 'i18n'
+require 'terminal-table'
+require 'colorize'
+require_relative 'program/app'
 
 cars = CarsManagement.new
 cars.find_the_car

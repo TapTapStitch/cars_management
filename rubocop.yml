@@ -26,13 +26,16 @@ Style/RegexpLiteral:
 # Layout ----------------------------------------------------------------------
 
 Layout/LineLength:
-  Max: 120
+  Max: 300
 
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
 
 Layout/FirstArrayElementIndentation:
   EnforcedStyle: consistent
+
+Layout/EndOfLine:
+  Enabled: False
 
 Layout/ClassStructure:
   Enabled: true

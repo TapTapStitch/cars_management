@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CarsManagement
+class CarsManagement # rubocop:disable Metrics/ClassLength
   BY_DATE_ADDED = 'date_added'
   BY_PRICE = 'price'
   ALLOWED_SORT_OPTIONS = [BY_DATE_ADDED, BY_PRICE].freeze
@@ -41,8 +41,8 @@ class CarsManagement
   end
 
   def language_load
-    I18n.load_path << Dir[File.expand_path("locales") + "/*.yml"]
-    I18n.default_locale = @language # (note that `en` is already the default!)
+    I18n.load_path << Dir[File.expand_path('locales') << '/*.yml']
+    I18n.default_locale = @language
   end
 
   def update_searches
@@ -94,17 +94,17 @@ class CarsManagement
     @pre_direction = read_input
   end
 
-  def is_empty(word)
+  def empty?(word)
     word.empty? ? 'skip' : word
   end
 
   def prepare_request_filters
-    @make = is_empty(@make)
-    @model = is_empty(@model)
-    @year_from = is_empty(@year_from)
-    @year_to = is_empty(@year_to)
-    @price_from = is_empty(@price_from)
-    @price_to = is_empty(@price_to)
+    @make = empty?(@make)
+    @model = empty?(@model)
+    @year_from = empty?(@year_from)
+    @year_to = empty?(@year_to)
+    @price_from = empty?(@price_from)
+    @price_to = empty?(@price_to)
   end
 
   def prepare_sort_options
@@ -166,7 +166,9 @@ class CarsManagement
   end
 
   def date_added_sort
-    @result_array.sort_by! { |t| "#{direction}#{DateTime.strptime(t['date_added'], '%d/%m/%y').strftime('%Q').to_i}".to_i }
+    @result_array.sort_by! do |t|
+      "#{direction}#{DateTime.strptime(t['date_added'], '%d/%m/%y').strftime('%Q').to_i}".to_i
+    end
   end
 
   def sort
@@ -211,14 +213,14 @@ class CarsManagement
     @request_quantity = 1
     @searches_array ||= []
     @searches_array.each do |record|
-      if check_request_match_by_filter(record)
-        exists = true
-        record['requests_quantity'] += 1
-        record['total_quantity'] = @total_quantity
-        @request_quantity = record['requests_quantity']
-      end
+      next unless check_request_match_by_filter(record)
+
+      exists = true
+      record['requests_quantity'] += 1
+      record['total_quantity'] = @total_quantity
+      @request_quantity = record['requests_quantity']
     end
-    return exists
+    exists
   end
 
   def insert_search_request_statistic
@@ -242,21 +244,21 @@ class CarsManagement
   end
 
   def calculate_searches
-    if find_total_quantity.positive? && !record_exists?
-      create_search_request_statistic
-      insert_search_request_statistic
-    end
+    return unless find_total_quantity.positive? && !record_exists?
+
+    create_search_request_statistic
+    insert_search_request_statistic
   end
 
   def statistic_table
     statistic_row = []
     statistic_row << [I18n.t(:total_quantity).colorize(:light_yellow), @total_quantity.to_s.colorize(:cyan)]
     statistic_row << [I18n.t(:request_quantity).colorize(:light_yellow), @request_quantity.to_s.colorize(:cyan)]
-    statistic_table = Terminal::Table.new :title => I18n.t(:statistic).colorize(:light_yellow), :rows => statistic_row
+    statistic_table = Terminal::Table.new title: I18n.t(:statistic).colorize(:light_yellow), rows: statistic_row
   end
 
   def print_statistic
-    puts(statistic_table)
+    puts(statistic_table) unless @result_array.length.zero?
   end
 
   def results_table
@@ -272,10 +274,10 @@ class CarsManagement
       results_row << :separator
     end
     results_row.pop
-    results_table = Terminal::Table.new :title => I18n.t(:results).colorize(:light_yellow), :rows => results_row
+    results_table = Terminal::Table.new title: I18n.t(:results).colorize(:light_yellow), rows: results_row
   end
 
   def print_results
-    puts(results_table)
+    puts(results_table) unless @result_array.length.zero?
   end
 end
