@@ -2,8 +2,6 @@ require:
   - rubocop-md
   - rubocop-rake
   - rubocop-performance
-  - rubocop-rails
-  - rubocop-rspec
 
 AllCops:
   TargetRubyVersion: 3.0
@@ -26,16 +24,13 @@ Style/RegexpLiteral:
 # Layout ----------------------------------------------------------------------
 
 Layout/LineLength:
-  Max: 300
+  Max: 120
 
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
 
 Layout/FirstArrayElementIndentation:
   EnforcedStyle: consistent
-
-Layout/EndOfLine:
-  Enabled: False
 
 Layout/ClassStructure:
   Enabled: true

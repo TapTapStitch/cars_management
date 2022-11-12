@@ -11,8 +11,7 @@ group :development do
   gem 'bundler-leak', '>=0.3.0'
   gem 'lefthook', '>=1.2.0'
   gem 'rubocop', '>=1.38.0', require: false
+  gem 'rubocop-md', '>=1.1.0'
   gem 'rubocop-performance', '>=1.15.0'
-  gem 'rubocop-rails', '>=2.17.2'
   gem 'rubocop-rake', '>=0.6.0'
-  gem 'rubocop-rspec', '>=2.15.0'
 end

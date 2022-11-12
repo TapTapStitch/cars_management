@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CarsManagement # rubocop:disable Metrics/ClassLength
+class CarsManagement
   BY_DATE_ADDED = 'date_added'
   BY_PRICE = 'price'
   ALLOWED_SORT_OPTIONS = [BY_DATE_ADDED, BY_PRICE].freeze
@@ -30,14 +30,13 @@ class CarsManagement # rubocop:disable Metrics/ClassLength
     sort
     print_results
     print_statistic
-    update_searches
   end
 
   private
 
   def file_read
-    @cars_array = YAML.load(File.read(PATH_TO_DATABASE))
-    @searches_array = YAML.load(File.read(PATH_TO_SEARCHES))
+    @cars_array = YAML.safe_load(File.read(PATH_TO_DATABASE))
+    @searches_array = YAML.safe_load(File.read(PATH_TO_SEARCHES))
   end
 
   def language_load
@@ -46,7 +45,7 @@ class CarsManagement # rubocop:disable Metrics/ClassLength
   end
 
   def update_searches
-    File.open(PATH_TO_SEARCHES, 'w') { |f| f.write @searches_array.to_yaml }
+    File.write(PATH_TO_SEARCHES, @searches_array.to_yaml)
   end
 
   def assign_language
@@ -71,20 +70,28 @@ class CarsManagement # rubocop:disable Metrics/ClassLength
     gets.chomp
   end
 
+  def read_year
+    print_message(:select_year_from)
+    @year_from = read_input
+    print_message(:select_year_to)
+    @year_to = read_input
+  end
+
+  def read_price
+    print_message(:select_price_from)
+    @price_from = read_input
+    print_message(:select_price_to)
+    @price_to = read_input
+  end
+
   def read_filters_from_user
     print_message(:select_rules)
     print_message(:select_make)
     @make = read_input
     print_message(:select_model)
     @model = read_input
-    print_message(:select_year_from)
-    @year_from = read_input
-    print_message(:select_year_to)
-    @year_to = read_input
-    print_message(:select_price_from)
-    @price_from = read_input
-    print_message(:select_price_to)
-    @price_to = read_input
+    read_year
+    read_price
   end
 
   def read_sort_from_user
@@ -145,8 +152,20 @@ class CarsManagement # rubocop:disable Metrics/ClassLength
     prepare_filter_value(@price_to, filter <= @price_to.to_i)
   end
 
+  def check_make_model(car_record)
+    check_make(car_record['make']) && check_model(car_record['model'])
+  end
+
+  def check_year(car_record)
+    check_year_from(car_record['year']) && check_year_to(car_record['year'])
+  end
+
+  def check_price(car_record)
+    check_price_from(car_record['price']) && check_price_to(car_record['price'])
+  end
+
   def match_by_filter?(car_record)
-    check_make(car_record['make']) && check_model(car_record['model']) && check_year_from(car_record['year']) && check_year_to(car_record['year']) && check_price_from(car_record['price']) && check_price_to(car_record['price'])
+    check_make_model(car_record) && check_year(car_record) && check_price(car_record)
   end
 
   def find_car
@@ -204,23 +223,39 @@ class CarsManagement # rubocop:disable Metrics/ClassLength
     filter['request_price_to'] == @price_to
   end
 
-  def check_request_match_by_filter(filter)
-    check_request_make(filter) && check_request_model(filter) && check_request_year_from(filter) && check_request_year_to(filter) && check_request_price_from(filter) && check_request_price_to(filter)
+  def check_request_make_model(filter)
+    check_request_make(filter) && check_request_model(filter)
   end
 
-  def record_exists?
-    exists = false
-    @request_quantity = 1
-    @searches_array ||= []
+  def check_request_year(filter)
+    check_request_year_from(filter) && check_request_year_to(filter)
+  end
+
+  def check_request_price(filter)
+    check_request_price_from(filter) && check_request_price_to(filter)
+  end
+
+  def check_request_match_by_filter(filter)
+    check_request_make_model(filter) && check_request_year(filter) && check_request_price(filter)
+  end
+
+  def find_record
     @searches_array.each do |record|
       next unless check_request_match_by_filter(record)
 
-      exists = true
+      @exists = true
       record['requests_quantity'] += 1
       record['total_quantity'] = @total_quantity
       @request_quantity = record['requests_quantity']
     end
-    exists
+  end
+
+  def record_exists?
+    @exists = false
+    @request_quantity = 1
+    @searches_array ||= []
+    find_record
+    @exists
   end
 
   def insert_search_request_statistic
@@ -259,6 +294,7 @@ class CarsManagement # rubocop:disable Metrics/ClassLength
 
   def print_statistic
     puts(statistic_table) unless @result_array.length.zero?
+    update_searches
   end
 
   def results_table
