@@ -1,11 +1,6 @@
 # frozen_string_literal: true
 
-require 'yaml'
-require 'date'
-require 'i18n'
-require 'terminal-table'
-require 'colorize'
-require_relative 'program/app'
+require_relative 'program/app_loader'
 
 cars = CarsManagement.new
-cars.find_the_car
+cars.find_car
