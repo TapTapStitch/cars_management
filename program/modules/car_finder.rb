@@ -8,17 +8,19 @@ class CarFinder
   DIRECTION_DESC = 'desc'
   ALLOWED_DIRECTION_OPTIONS = [DIRECTION_ASC, DIRECTION_DESC].freeze
 
-  def initialize(cars_array, make, model, year_from, year_to, price_from, price_to, pre_sort, pre_direction)
+  def initialize(cars_array, user_input)
     @cars_array = cars_array
-    @make = make
-    @model = model
-    @year_from = year_from
-    @year_to = year_to
-    @price_from = price_from
-    @price_to = price_to
-    @pre_sort = pre_sort
-    @pre_direction = pre_direction
+    @make = user_input.make
+    @model = user_input.model
+    @year_from = user_input.year_from
+    @year_to = user_input.year_to
+    @price_from = user_input.price_from
+    @price_to = user_input.price_to
+    @pre_sort = user_input.pre_sort
+    @pre_direction = user_input.pre_direction
   end
+
+  attr_reader :result_array
 
   def find_car_records
     prepare_filters
@@ -89,7 +91,8 @@ class CarFinder
   end
 
   def match_by_filter?(car_record)
-    check_make_model(car_record) && check_year(car_record) && check_price_from(car_record['price']) && check_price_to(car_record['price'])
+    check_make_model(car_record) && check_year(car_record) &&
+      check_price_from(car_record['price']) && check_price_to(car_record['price'])
   end
 
   def find_car

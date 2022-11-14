@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-class ResultsToConsole
-  def initialize(result_array, total_quantity, request_quantity)
-    @result_array = result_array
-    @total_quantity = total_quantity
-    @request_quantity = request_quantity
+class ResultsPrinter
+  def initialize(statistic, car_finder)
+    @total_quantity = statistic.total_quantity
+    @request_quantity = statistic.request_quantity
+    @result_array = car_finder.result_array
   end
 
   def output_results

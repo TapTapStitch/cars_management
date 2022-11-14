@@ -4,10 +4,12 @@ class Database
   PATH_TO_DATABASE = 'database/db.yml'
   PATH_TO_SEARCHES = 'database/searches.yml'
 
-  def file_read
-    cars_array = YAML.safe_load(File.read(PATH_TO_DATABASE))
-    searches_array = YAML.safe_load(File.read(PATH_TO_SEARCHES))
-    [cars_array, searches_array]
+  def read_cars
+    YAML.safe_load(File.read(PATH_TO_DATABASE))
+  end
+
+  def read_searches
+    YAML.safe_load(File.read(PATH_TO_SEARCHES))
   end
 
   def update_searches(searches_array)

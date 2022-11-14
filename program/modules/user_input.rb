@@ -8,6 +8,8 @@ class UserInput
     @language = default_language
   end
 
+  attr_reader :make, :model, :year_from, :year_to, :price_from, :price_to, :pre_sort, :pre_direction
+
   def read_users_input
     language_input
     language_load

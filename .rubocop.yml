@@ -24,7 +24,7 @@ Style/RegexpLiteral:
 # Layout ----------------------------------------------------------------------
 
 Layout/LineLength:
-  Max: 140
+  Max: 120
 
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented

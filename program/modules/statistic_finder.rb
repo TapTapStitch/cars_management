@@ -1,16 +1,19 @@
 # frozen_string_literal: true
 
 class StatisticFinder
-  def initialize(results_array, searches_array, make, model, year_from, year_to, price_from, price_to)
+  def initialize(results_array, searches_array, user_input)
     @result_array = results_array
     @searches_array = searches_array
-    @make = make
-    @model = model
-    @year_from = year_from
-    @year_to = year_to
-    @price_from = price_from
-    @price_to = price_to
+    @searches_array ||= []
+    @make = user_input.make
+    @model = user_input.model
+    @year_from = user_input.year_from
+    @year_to = user_input.year_to
+    @price_from = user_input.price_from
+    @price_to = user_input.price_to
   end
+
+  attr_reader :total_quantity, :request_quantity, :searches_array
 
   def find_statistic
     calculate_searches
@@ -73,7 +76,6 @@ class StatisticFinder
   def record_exists?
     @exists = false
     @request_quantity = 1
-    @searches_array ||= []
     find_record
     @exists
   end
