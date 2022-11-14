@@ -19,4 +19,4 @@ ua:
   odometer: 'Пробіг:'
   price: 'Ціна:'
   description: 'Опис:'
-  date: 'Дата додання:'
+  date_added: 'Дата додання:'

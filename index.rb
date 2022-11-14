@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-require_relative 'gems.rb'
-require_relative 'program/app.rb'
+
+require_relative 'program/app_loader'
 
 cars = CarsManagement.new
-cars.find_the_car
+cars.find_car
