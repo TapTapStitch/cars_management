@@ -11,11 +11,16 @@ class UserInput
   attr_reader :make, :model, :year_from, :year_to, :price_from, :price_to, :pre_sort, :pre_direction
 
   def read_users_input
-    language_input
-    language_load
     read_filters_from_user
     read_sort_from_user
     [@make, @model, @year_from, @year_to, @price_from, @price_to, @pre_sort, @pre_direction]
+  end
+
+  def language_input
+    puts language_table
+    @language_input = read_input
+    assign_language
+    language_load
   end
 
   private
@@ -26,6 +31,14 @@ class UserInput
 
   def read_input
     gets.chomp
+  end
+
+  def language_table
+    language_row = []
+    language_row << ['English'.colorize(:light_yellow), 'en']
+    language_row << ['Ukrainian'.colorize(:light_yellow), 'ua']
+    language_table = Terminal::Table.new title: 'Choose language'.colorize(:blue), rows: language_row
+    [language_table]
   end
 
   def language_load
@@ -39,12 +52,6 @@ class UserInput
     else
       puts 'Default language is english'.colorize(:blue)
     end
-  end
-
-  def language_input
-    puts 'Chose language (en/ua)'.colorize(:blue)
-    @language_input = read_input
-    assign_language
   end
 
   def read_year
@@ -63,6 +70,7 @@ class UserInput
 
   def read_filters_from_user
     print_message(:select_rules)
+    puts
     print_message(:select_make)
     @make = read_input
     print_message(:select_model)
