@@ -8,7 +8,7 @@ class UserInput
     @language = default_language
   end
 
-  attr_reader :make, :model, :year_from, :year_to, :price_from, :price_to, :pre_sort, :pre_direction
+  attr_reader :make, :model, :year_from, :year_to, :price_from, :price_to, :pre_sort, :pre_direction, :user_input
 
   def read_users_input
     read_filters_from_user
@@ -21,12 +21,22 @@ class UserInput
     @language_input = read_input
     assign_language
     language_load
+    welcome_message
+  end
+
+  def menu_get
+    @user_input = gets.chomp
   end
 
   private
 
   def print_message(translation_key, color = :blue)
     puts I18n.t(translation_key).colorize(color)
+  end
+
+  def welcome_message
+    row = [[I18n.t(:welcome_message).colorize(:blue)]]
+    puts Terminal::Table.new rows: row
   end
 
   def read_input

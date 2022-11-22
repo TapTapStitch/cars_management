@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PrintCars
+class CarsPrinter
   def initialize(cars_array)
     @cars_array = cars_array
   end

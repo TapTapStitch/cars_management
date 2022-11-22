@@ -11,19 +11,27 @@ require_relative 'modules/user_input'
 require_relative 'modules/car_finder'
 require_relative 'modules/statistic_finder'
 require_relative 'modules/results_printer'
-require_relative 'modules/print_cars'
+require_relative 'modules/cars_printer'
+require_relative 'modules/menu_options_printer'
 
 class CarsManagement
+  MENU_OPTIONS_MAPPER = {
+    '1' => :find_car,
+    '2' => :print_all_cars,
+    '3' => :show_menu_help,
+    '4' => :exit_program
+  }.freeze
+
   def initialize
     @db = Database.new
     @input = UserInput.new
     @input.language_input
-    welcome_message
+    @menu_printer = MenuOptionsPrinter.new
   end
 
   def call
-    menu_option
-    menu_get
+    @menu_printer.show_menu_options
+    @input.menu_get
     menu_logic
   end
 
@@ -39,48 +47,31 @@ class CarsManagement
     statistic.find_statistic
     @db.update_searches(statistic.searches_array)
     ResultsPrinter.new(statistic, car_finder).output_results
+    call
   end
 
-  def output_cars
+  def print_all_cars
     cars_array = @db.read_cars
-    PrintCars.new(cars_array).output_cars
+    CarsPrinter.new(cars_array).output_cars
+    call
   end
 
-  def welcome_message
-    row = [[I18n.t(:welcome_message).colorize(:blue)]]
-    puts Terminal::Table.new rows: row
+  def show_menu_help
+    puts I18n.t(:menu_show_help).colorize(:blue)
+    call
   end
 
-  def menu_option
-    table = Terminal::Table.new title: I18n.t(:menu_title).colorize(:yellow) do |t|
-      t.add_row [I18n.t(:menu_search_car), 1]
-      t.add_row [I18n.t(:menu_show_car), 2]
-      t.add_row [I18n.t(:menu_help), 3]
-      t.add_row [I18n.t(:menu_exit), 4]
-      t.style = { all_separators: true }
-    end
-    puts table
+  def exit_program
+    puts I18n.t(:menu_show_exit).colorize(:red)
   end
 
-  def menu_get
-    @user_input = gets.chomp
-  end
-
-  def menu_logic # rubocop:disable Metrics/MethodLength
-    case @user_input
-    when '1'
-      find_car
-      call
-    when '2'
-      output_cars
-      call
-    when '3'
-      puts I18n.t(:menu_show_help).colorize(:blue)
-      call
-    when '4'
-      puts I18n.t(:menu_show_exit).colorize(:red)
-    else
-      call
+  def menu_logic
+    case MENU_OPTIONS_MAPPER[@input.user_input]
+    when :find_car then find_car
+    when :print_all_cars then print_all_cars
+    when :show_menu_help then show_menu_help
+    when :exit_program then exit_program
+    else call
     end
   end
 end
