@@ -30,9 +30,7 @@ class CarsManagement
 
   def call
     @input.language_input
-    @menu_printer.show_menu_options
-    @input.menu_get
-    menu_logic
+    menu_call
   end
 
   private
@@ -47,31 +45,36 @@ class CarsManagement
     statistic.find_statistic
     @db.update_searches(statistic.searches_array)
     ResultsPrinter.new(statistic, car_finder).output_results
-    call
   end
 
   def print_all_cars
     cars_array = @db.read_cars
     CarsPrinter.new(cars_array).output_cars
-    call
   end
 
   def show_menu_help
     puts I18n.t(:menu_show_help).colorize(:blue)
-    call
   end
 
   def exit_program
     puts I18n.t(:menu_show_exit).colorize(:red)
   end
 
-  def menu_logic
-    case MENU_OPTIONS_MAPPER[@input.user_input]
-    when :find_car then find_car
-    when :print_all_cars then print_all_cars
-    when :show_menu_help then show_menu_help
-    when :exit_program then exit_program
-    else call
+  def menu_options
+    @menu_printer.show_menu_options
+    @input.menu_get
+  end
+
+  def menu_call
+    loop do
+      menu_options
+      case MENU_OPTIONS_MAPPER[@input.user_input]
+      when :find_car then find_car
+      when :print_all_cars then print_all_cars
+      when :show_menu_help then show_menu_help
+      when :exit_program then break
+      end
     end
+    exit_program
   end
 end
