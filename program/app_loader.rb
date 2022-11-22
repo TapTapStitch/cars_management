@@ -25,11 +25,11 @@ class CarsManagement
   def initialize
     @db = Database.new
     @input = UserInput.new
-    @input.language_input
     @menu_printer = MenuOptionsPrinter.new
   end
 
   def call
+    @input.language_input
     @menu_printer.show_menu_options
     @input.menu_get
     menu_logic
