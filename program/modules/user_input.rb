@@ -31,7 +31,7 @@ class UserInput
   private
 
   def print_message(translation_key, color = :blue)
-    puts I18n.t(translation_key).colorize(color)
+    print I18n.t(translation_key).colorize(color)
   end
 
   def welcome_message

@@ -5,6 +5,7 @@ require 'date'
 require 'i18n'
 require 'terminal-table'
 require 'colorize'
+require 'bcrypt'
 
 require_relative 'modules/database'
 require_relative 'modules/user_input'
@@ -13,6 +14,7 @@ require_relative 'modules/statistic_finder'
 require_relative 'modules/results_printer'
 require_relative 'modules/cars_printer'
 require_relative 'modules/menu_options_printer'
+require_relative 'modules/authentication'
 
 class CarsManagement
   MENU_OPTIONS_MAPPER = {
@@ -26,11 +28,16 @@ class CarsManagement
     @db = Database.new
     @input = UserInput.new
     @menu_printer = MenuOptionsPrinter.new
+    @authentication = Authentication.new
   end
 
   def call
     @input.language_input
     menu_call
+  end
+
+  def testpass
+    @authentication.call
   end
 
   private
