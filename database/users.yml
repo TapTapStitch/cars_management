@@ -1,8 +1,8 @@
 ---
-- email: zubikkraft@gmail.com
+- email: testmail@gmail.com
   password: !ruby/string:BCrypt::Password
-    str: "$2a$12$qgn1nWdOxm5hlkhOZvft6.BAuzcUOflAg54hPvX15cryh4.ENOKzW"
+    str: "$2a$12$wNbFMGd14TXMx5Lz4hY1GO0BSbnzzSC5ArA1iTDIku6efL773M.i."
     version: 2a
     cost: 12
-    salt: "$2a$12$qgn1nWdOxm5hlkhOZvft6."
-    checksum: BAuzcUOflAg54hPvX15cryh4.ENOKzW
+    salt: "$2a$12$wNbFMGd14TXMx5Lz4hY1GO"
+    checksum: 0BSbnzzSC5ArA1iTDIku6efL773M.i.
