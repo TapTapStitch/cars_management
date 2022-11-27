@@ -20,24 +20,30 @@ class CarsManagement
   MENU_OPTIONS_MAPPER = {
     '1' => :find_car,
     '2' => :print_all_cars,
-    '3' => :show_menu_help,
-    '4' => :exit_program
+    '3' => :log_in,
+    '4' => :sign_up,
+    '5' => :show_menu_help,
+    '6' => :exit_program
+  }.freeze
+  MENU_OPTIONS_MAPPER_LOGINED = {
+    '1' => :find_car,
+    '2' => :print_all_cars,
+    '3' => :log_out,
+    '4' => :show_menu_help,
+    '5' => :exit_program
   }.freeze
 
   def initialize
     @db = Database.new
     @input = UserInput.new
     @menu_printer = MenuOptionsPrinter.new
-    @authentication = Authentication.new
+    @authentication = Authentication.new(@db.read_users)
+    @logined = false
   end
 
   def call
     @input.language_input
     menu_call
-  end
-
-  def testpass
-    @authentication.call
   end
 
   private
@@ -65,6 +71,7 @@ class CarsManagement
 
   def exit_program
     puts I18n.t(:menu_show_exit).colorize(:red)
+    exit
   end
 
   def menu_options
@@ -72,16 +79,61 @@ class CarsManagement
     @input.menu_get
   end
 
+  def menu_options_logined
+    @menu_printer.show_menu_options_for_logined
+    @input.menu_get
+  end
+
+  def check_for_login
+    return unless @logined
+
+    menu_logined_call
+  end
+
+  def log_in
+    @input.log_user
+    @authentication.log_in(@input)
+    @logined = @authentication.logined
+  end
+
+  def sign_up
+    @input.reg_user
+    @authentication.sign_up(@input)
+    @db.update_users(@authentication.userdata)
+    @logined = @authentication.logined
+  end
+
+  def log_out
+    puts I18n.t(:log_out_massage).colorize(:red)
+    @logined = false
+    menu_call
+  end
+
   def menu_call
     loop do
+      check_for_login
       menu_options
       case MENU_OPTIONS_MAPPER[@input.user_input]
       when :find_car then find_car
       when :print_all_cars then print_all_cars
+      when :log_in then log_in
+      when :sign_up then sign_up
       when :show_menu_help then show_menu_help
-      when :exit_program then break
+      when :exit_program then exit_program
       end
     end
-    exit_program
+  end
+
+  def menu_logined_call
+    loop do
+      menu_options_logined
+      case MENU_OPTIONS_MAPPER_LOGINED[@input.user_input]
+      when :find_car then find_car
+      when :print_all_cars then print_all_cars
+      when :log_out then log_out
+      when :show_menu_help then show_menu_help
+      when :exit_program then exit_program
+      end
+    end
   end
 end

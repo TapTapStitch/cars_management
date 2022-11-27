@@ -3,4 +3,4 @@
 require_relative 'program/app_loader'
 
 cars = CarsManagement.new
-cars.testpass
+cars.call
