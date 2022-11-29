@@ -4,14 +4,8 @@ require_relative 'menu_modules'
 require_relative 'menu_options'
 
 class Authentication < MenuModules
-  VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d-]+(\.[a-z]+)*\.[a-z]+\z/i
-  VALID_PASSWORD = /\A
-  (?=.{8,})          # Must contain 8 or more characters
-  (?=.*\d)           # Must contain a digit
-  (?=.*[a-z])        # Must contain a lower case character
-  (?=.*[A-Z])        # Must contain an upper case character
-/x
-
+  VALID_EMAIL_REGEX = /\A[\w+\-.]{5,}+@[a-z\d-]+(\.[a-z]+)*\.[a-z]+\z/i
+  VALID_PASSWORD = /\A(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}+\z/i
   attr_reader :login
 
   def initialize(userdata, input, db)
