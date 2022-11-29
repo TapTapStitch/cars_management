@@ -5,8 +5,7 @@ require_relative 'database'
 class StatisticFinder
   def initialize(car_finder)
     @result_array = car_finder.result_array
-    @db = Database.new
-    @searches_array = @db.read_searches
+    @searches_array = Database.read_searches
     @searches_array ||= []
     puts @make = car_finder.make
     puts @model = car_finder.model
@@ -20,7 +19,7 @@ class StatisticFinder
 
   def find_statistic
     calculate_searches
-    @db.update_searches(@searches_array)
+    Database.update_searches(@searches_array)
     [@total_quantity, @request_quantity]
   end
 

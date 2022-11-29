@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class MenuOptions
+class MenuOptionsPrinter
   def show_menu_options
     keys_array = %i[menu_search_car menu_show_car log_in sign_up menu_help menu_exit]
     rows = []

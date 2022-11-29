@@ -12,7 +12,7 @@ class CarFinder
   ALLOWED_DIRECTION_OPTIONS = [DIRECTION_ASC, DIRECTION_DESC].freeze
 
   def initialize
-    @cars_array = Database.new.read_cars
+    @cars_array = Database.read_cars
     @input = UserInput.new
   end
 

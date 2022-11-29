@@ -1,8 +1,0 @@
----
-- email: testmail@gmail.com
-  password: !ruby/string:BCrypt::Password
-    str: "$2a$12$1S40UvI4E7CYGroT9Gi7auOstV4zpaIHJ6T6iY5/CjuLYZq/o/roa"
-    version: 2a
-    cost: 12
-    salt: "$2a$12$1S40UvI4E7CYGroT9Gi7au"
-    checksum: OstV4zpaIHJ6T6iY5/CjuLYZq/o/roa

@@ -9,7 +9,7 @@ class UserInput
   end
 
   attr_reader :make, :model, :year_from, :year_to, :price_from, :price_to,
-              :pre_sort, :pre_direction, :mail, :pass, :confirm_pass
+              :pre_sort, :pre_direction, :email, :password, :confirm_pass
 
   def read_users_input
     read_filters_from_user
@@ -31,16 +31,16 @@ class UserInput
 
   def log_user
     print_message(:mail)
-    @mail = read_input
+    @email = read_input
     print_message(:pass)
-    @pass = read_input
+    @password = read_input
   end
 
   def reg_user
     print_message(:mail)
-    @mail = read_input
+    @email = read_input
     print_message(:pass)
-    @pass = read_input
+    @password = read_input
     print_message(:confirm_pass)
     @confirm_pass = read_input
   end

@@ -13,7 +13,7 @@ require_relative 'modules/car_finder'
 require_relative 'modules/statistic_finder'
 require_relative 'modules/results_printer'
 require_relative 'modules/cars_printer'
-require_relative 'modules/menu_options'
+require_relative 'modules/menu_options_printer'
 require_relative 'modules/authentication'
 
 class CarsManagement
@@ -70,8 +70,8 @@ class CarsManagement
     case MENU_OPTIONS_MAPPER[@authentication.menu_get]
     when :find_car then find_car
     when :print_all_cars then CarsPrinter.new.output_cars
-    when :log_in then @authentication.log_in
-    when :sign_up then @authentication.sign_up
+    when :log_in then @authentication.sign_in_user
+    when :sign_up then @authentication.sign_up_user
     when :show_menu_help then @authentication.show_menu_help
     when :exit_program then @authentication.exit_program
     end
