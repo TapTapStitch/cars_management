@@ -34,7 +34,6 @@ class CarsManagement
   }.freeze
 
   def initialize
-    @db = Database.new
     @input = UserInput.new
     @authentication = Authentication.new
     @login = false
@@ -48,14 +47,10 @@ class CarsManagement
   private
 
   def find_car
-    cars_array = @db.read_cars
-    searches_array = @db.read_searches
-    @input.read_users_input
-    car_finder = CarFinder.new(cars_array, @input)
-    result_array = car_finder.find_car_records
-    statistic = StatisticFinder.new(result_array, searches_array, @input)
+    car_finder = CarFinder.new
+    car_finder.find_car_records
+    statistic = StatisticFinder.new(car_finder)
     statistic.find_statistic
-    @db.update_searches(statistic.searches_array)
     ResultsPrinter.new(statistic, car_finder).output_results
   end
   
