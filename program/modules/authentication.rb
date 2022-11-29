@@ -52,7 +52,9 @@ class Authentication < MenuModules
   def menu_options_login
     @menu_printer.show_menu_options_login
   end
-
+  def menu_get
+    @input.menu_get
+  end
   private
 
   def mistake_found(mistake)

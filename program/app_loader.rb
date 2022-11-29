@@ -34,13 +34,12 @@ class CarsManagement
   }.freeze
 
   def initialize
-    @input = UserInput.new
     @authentication = Authentication.new
     @login = false
   end
 
   def call
-    @input.language_input
+    UserInput.new.language_input
     menu_call
   end
 
@@ -68,7 +67,7 @@ class CarsManagement
   end
 
   def menu_call_case
-    case MENU_OPTIONS_MAPPER[@input.menu_get]
+    case MENU_OPTIONS_MAPPER[@authentication.menu_get]
     when :find_car then find_car
     when :print_all_cars then CarsPrinter.new.output_cars
     when :log_in then @authentication.log_in
@@ -79,7 +78,7 @@ class CarsManagement
   end
 
   def menu_call_case_login
-    case MENU_OPTIONS_MAPPER_LOGIN[@input.menu_get]
+    case MENU_OPTIONS_MAPPER_LOGIN[@authentication.menu_get]
     when :find_car then find_car
     when :print_all_cars then CarsPrinter.new.output_cars
     when :log_out then log_out
