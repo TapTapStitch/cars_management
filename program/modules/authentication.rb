@@ -44,11 +44,7 @@ class Authentication
   end
 
   def menu_options
-    @menu_printer.show_menu_options
-  end
-
-  def menu_options_login
-    @menu_printer.show_menu_options_login
+    @menu_printer.show_menu_options(@login)
   end
 
   def menu_get

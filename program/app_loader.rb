@@ -18,19 +18,13 @@ require_relative 'modules/authentication'
 
 class CarsManagement
   MENU_OPTIONS_MAPPER = {
-    '1' => :find_car,
-    '2' => :print_all_cars,
-    '3' => :log_in,
-    '4' => :sign_up,
-    '5' => :show_menu_help,
-    '6' => :exit_program
-  }.freeze
-  MENU_OPTIONS_MAPPER_LOGIN = {
-    '1' => :find_car,
-    '2' => :print_all_cars,
-    '3' => :log_out,
-    '4' => :show_menu_help,
-    '5' => :exit_program
+    'find car' => :find_car,
+    'print cars' => :print_all_cars,
+    'log in' => :log_in,
+    'sign up' => :sign_up,
+    'log out' => :log_out,
+    'help' => :show_menu_help,
+    'exit' => :exit_program
   }.freeze
 
   def initialize
@@ -52,53 +46,25 @@ class CarsManagement
     statistic.find_statistic
     ResultsPrinter.new(statistic, car_finder).output_results
   end
-  
-  def check_for_login
-    @login = @authentication.login
-    return unless @login
-
-    menu_login_call
-  end
 
   def log_out
     @authentication.log_out
     @login = @authentication.login
-    menu_call
-  end
-
-  def menu_call_case
-    case MENU_OPTIONS_MAPPER[@authentication.menu_get]
-    when :find_car then find_car
-    when :print_all_cars then CarsPrinter.new.output_cars
-    when :log_in then @authentication.sign_in_user
-    when :sign_up then @authentication.sign_up_user
-    when :show_menu_help then @authentication.show_menu_help
-    when :exit_program then @authentication.exit_program
-    end
-  end
-
-  def menu_call_case_login
-    case MENU_OPTIONS_MAPPER_LOGIN[@authentication.menu_get]
-    when :find_car then find_car
-    when :print_all_cars then CarsPrinter.new.output_cars
-    when :log_out then log_out
-    when :show_menu_help then @authentication.show_menu_help
-    when :exit_program then @authentication.exit_program
-    end
   end
 
   def menu_call
     loop do
-      check_for_login
+      @login = @authentication.login
       @authentication.menu_options
-      menu_call_case
-    end
-  end
-
-  def menu_login_call
-    loop do
-      @authentication.menu_options_login
-      menu_call_case_login
+      case MENU_OPTIONS_MAPPER[@authentication.menu_get]
+      when :find_car then find_car
+      when :print_all_cars then CarsPrinter.new.output_cars
+      when :log_in then @authentication.sign_in_user
+      when :sign_up then @authentication.sign_up_user
+      when :log_out then log_out if @login
+      when :show_menu_help then @authentication.show_menu_help
+      when :exit_program then @authentication.exit_program
+      end
     end
   end
 end
