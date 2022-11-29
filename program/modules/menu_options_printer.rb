@@ -4,10 +4,7 @@ class MenuOptionsPrinter
   def show_menu_options(login)
     @options_array = ['find car', 'print cars', 'log in', 'sign up', 'help', 'exit']
     @keys_array = %i[menu_search_car menu_show_car log_in sign_up menu_help menu_exit]
-    if login
-      remove_elements
-      add_elements
-    end
+    check_for_login(login)
     rows = []
     @keys_array.each_with_index do |value, index|
       rows << [@options_array[index], printer(value)]
@@ -21,6 +18,13 @@ class MenuOptionsPrinter
 
   def printer(keyword)
     I18n.t(keyword).colorize(:light_yellow)
+  end
+
+  def check_for_login(login)
+    return unless login
+
+    remove_elements
+    add_elements
   end
 
   def remove_elements

@@ -91,16 +91,9 @@ class CarFinder
     prepare_filter_value(@price_to, filter <= @price_to.to_i)
   end
 
-  def check_make_model(car_record)
-    check_make(car_record['make']) && check_model(car_record['model'])
-  end
-
-  def check_year(car_record)
-    check_year_from(car_record['year']) && check_year_to(car_record['year'])
-  end
-
   def match_by_filter?(car_record)
-    check_make_model(car_record) && check_year(car_record) &&
+    check_make(car_record['make']) && check_model(car_record['model']) && check_year_from(car_record['year']) &&
+      check_year_to(car_record['year']) &&
       check_price_from(car_record['price']) && check_price_to(car_record['price'])
   end
 

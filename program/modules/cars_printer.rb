@@ -1,12 +1,8 @@
 # frozen_string_literal: true
 
 require_relative 'database'
-class CarsPrinter
-  def initialize
-    @db = Database.new
-    @cars_array = @db.read_cars
-  end
 
+class CarsPrinter
   def output_cars
     puts print_cars
   end
@@ -15,7 +11,7 @@ class CarsPrinter
 
   def print_cars
     cars_row = []
-    @cars_array.each do |record|
+    Database.read_cars.each do |record|
       record.each do |key, value|
         cars_row << [I18n.t(key.to_sym).colorize(:light_yellow), value.to_s.colorize(:cyan)]
       end

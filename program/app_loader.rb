@@ -20,7 +20,7 @@ class CarsManagement
   MENU_OPTIONS_MAPPER = {
     'find car' => :find_car,
     'print cars' => :print_all_cars,
-    'log in' => :log_in,
+    'log in' => :sign_in,
     'sign up' => :sign_up,
     'log out' => :log_out,
     'help' => :show_menu_help,
@@ -48,23 +48,41 @@ class CarsManagement
   end
 
   def log_out
+    return unless @login
+
     @authentication.log_out
     @login = @authentication.login
   end
 
+  def menu_call_condition
+    @login = @authentication.login
+    @authentication.menu_options
+  end
+
+  def sign_in
+    @authentication.sign_in_user unless @login
+  end
+
+  def register
+    @authentication.register_user unless @login
+  end
+
+  def menu_case # rubocop:disable Metrics/CyclomaticComplexity
+    case MENU_OPTIONS_MAPPER[gets.chomp]
+    when :find_car then find_car
+    when :print_all_cars then CarsPrinter.new.output_cars
+    when :sign_in then sign_in
+    when :sign_up then register
+    when :log_out then log_out
+    when :show_menu_help then @authentication.show_menu_help
+    when :exit_program then @authentication.exit_program
+    end
+  end
+
   def menu_call
     loop do
-      @login = @authentication.login
-      @authentication.menu_options
-      case MENU_OPTIONS_MAPPER[@authentication.menu_get]
-      when :find_car then find_car
-      when :print_all_cars then CarsPrinter.new.output_cars
-      when :log_in then @authentication.sign_in_user
-      when :sign_up then @authentication.sign_up_user
-      when :log_out then log_out if @login
-      when :show_menu_help then @authentication.show_menu_help
-      when :exit_program then @authentication.exit_program
-      end
+      menu_call_condition
+      menu_case
     end
   end
 end
