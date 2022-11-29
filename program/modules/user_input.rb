@@ -9,7 +9,7 @@ class UserInput
   end
 
   attr_reader :make, :model, :year_from, :year_to, :price_from, :price_to,
-              :pre_sort, :pre_direction, :user_input, :mail, :pass, :confirm_pass
+              :pre_sort, :pre_direction, :mail, :pass, :confirm_pass
 
   def read_users_input
     read_filters_from_user
@@ -26,7 +26,7 @@ class UserInput
   end
 
   def menu_get
-    @user_input = gets.chomp
+    gets.chomp
   end
 
   def log_user

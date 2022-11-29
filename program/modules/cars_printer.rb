@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
+require_relative 'database'
 class CarsPrinter
-  def initialize(cars_array)
-    @cars_array = cars_array
+  def initialize
+    @db = Database.new
+    @cars_array = @db.read_cars
   end
 
   def output_cars

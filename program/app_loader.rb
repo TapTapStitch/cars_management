@@ -36,7 +36,7 @@ class CarsManagement
   def initialize
     @db = Database.new
     @input = UserInput.new
-    @authentication = Authentication.new(@db.read_users, @input, @db)
+    @authentication = Authentication.new
     @login = false
   end
 
@@ -58,12 +58,7 @@ class CarsManagement
     @db.update_searches(statistic.searches_array)
     ResultsPrinter.new(statistic, car_finder).output_results
   end
-
-  def print_all_cars
-    cars_array = @db.read_cars
-    CarsPrinter.new(cars_array).output_cars
-  end
-
+  
   def check_for_login
     @login = @authentication.login
     return unless @login
@@ -78,9 +73,9 @@ class CarsManagement
   end
 
   def menu_call_case
-    case MENU_OPTIONS_MAPPER[@input.user_input]
+    case MENU_OPTIONS_MAPPER[@input.menu_get]
     when :find_car then find_car
-    when :print_all_cars then print_all_cars
+    when :print_all_cars then CarsPrinter.new.output_cars
     when :log_in then @authentication.log_in
     when :sign_up then @authentication.sign_up
     when :show_menu_help then @authentication.show_menu_help
@@ -89,9 +84,9 @@ class CarsManagement
   end
 
   def menu_call_case_login
-    case MENU_OPTIONS_MAPPER_LOGIN[@input.user_input]
+    case MENU_OPTIONS_MAPPER_LOGIN[@input.menu_get]
     when :find_car then find_car
-    when :print_all_cars then print_all_cars
+    when :print_all_cars then CarsPrinter.new.output_cars
     when :log_out then log_out
     when :show_menu_help then @authentication.show_menu_help
     when :exit_program then @authentication.exit_program

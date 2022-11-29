@@ -2,18 +2,20 @@
 
 require_relative 'menu_modules'
 require_relative 'menu_options'
+require_relative 'user_input'
+require_relative 'database'
 
 class Authentication < MenuModules
   VALID_EMAIL_REGEX = /\A[\w+\-.]{5,}+@[a-z\d-]+(\.[a-z]+)*\.[a-z]+\z/i
   VALID_PASSWORD = /\A(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}+\z/i
   attr_reader :login
 
-  def initialize(userdata, input, db)
-    @userdata = userdata
+  def initialize
+    @db = Database.new
+    @userdata = @db.read_users
     @userdata ||= []
     @login = false
-    @input = input
-    @db = db
+    @input = UserInput.new
     @menu_printer = MenuOptions.new
   end
 
@@ -45,12 +47,10 @@ class Authentication < MenuModules
 
   def menu_options
     @menu_printer.show_menu_options
-    @input.menu_get
   end
 
   def menu_options_login
     @menu_printer.show_menu_options_login
-    @input.menu_get
   end
 
   private
