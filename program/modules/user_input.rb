@@ -29,7 +29,7 @@ class UserInput
     gets.chomp
   end
 
-  def log_user
+  def login_user
     print_message(:mail)
     @email = read_input
     print_message(:pass)

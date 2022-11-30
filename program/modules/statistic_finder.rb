@@ -7,12 +7,12 @@ class StatisticFinder
     @result_array = car_finder.result_array
     @searches_array = Database.read_searches
     @searches_array ||= []
-    puts @make = car_finder.make
-    puts @model = car_finder.model
-    puts @year_from = car_finder.year_from
-    puts @year_to = car_finder.year_to
-    puts @price_from = car_finder.price_from
-    puts @price_to = car_finder.price_to
+    @make = car_finder.make
+    @model = car_finder.model
+    @year_from = car_finder.year_from
+    @year_to = car_finder.year_to
+    @price_from = car_finder.price_from
+    @price_to = car_finder.price_to
   end
 
   attr_reader :total_quantity, :request_quantity

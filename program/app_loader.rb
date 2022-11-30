@@ -20,8 +20,8 @@ class CarsManagement
   MENU_OPTIONS_MAPPER = {
     'find car' => :find_car,
     'print cars' => :print_all_cars,
-    'log in' => :sign_in,
-    'sign up' => :sign_up,
+    'log in' => :login_user,
+    'sign up' => :register_user,
     'log out' => :log_out,
     'help' => :show_menu_help,
     'exit' => :exit_program
@@ -56,14 +56,14 @@ class CarsManagement
 
   def menu_call_condition
     @login = @authentication.login
-    @authentication.menu_options
+    MenuOptionsPrinter.new.show_menu_options(@login)
   end
 
-  def sign_in
-    @authentication.sign_in_user unless @login
+  def login_user
+    @authentication.login_user unless @login
   end
 
-  def register
+  def register_user
     @authentication.register_user unless @login
   end
 
@@ -71,11 +71,11 @@ class CarsManagement
     case MENU_OPTIONS_MAPPER[gets.chomp]
     when :find_car then find_car
     when :print_all_cars then CarsPrinter.new.output_cars
-    when :sign_in then sign_in
-    when :sign_up then register
+    when :login_user then login_user
+    when :register_user then register_user
     when :log_out then log_out
-    when :show_menu_help then @authentication.show_menu_help
-    when :exit_program then @authentication.exit_program
+    when :show_menu_help then MenuOptionsPrinter.new.show_menu_help
+    when :exit_program then exit_program
     end
   end
 
@@ -84,5 +84,10 @@ class CarsManagement
       menu_call_condition
       menu_case
     end
+  end
+
+  def exit_program
+    puts I18n.t(:menu_show_exit).colorize(:red)
+    exit
   end
 end

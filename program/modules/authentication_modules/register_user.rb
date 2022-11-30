@@ -8,15 +8,14 @@ class RegisterUser
   def initialize
     @input = UserInput.new
     @login = false
-    @userdata = Database.read_users
-    @userdata ||= []
+    @userdata = Database.read_users ||= []
   end
 
   def call
     @input.reg_user
-    load_user_input
+    read_user_input
     @validator = Validator.new(@password, @email, @confirm_pass)
-    return if @validator.check_user_mistakes
+    return unless @validator.success?
 
     create_user
     Database.update_users(@userdata)
@@ -26,7 +25,7 @@ class RegisterUser
 
   private
 
-  def load_user_input
+  def read_user_input
     @email = @input.email
     @password = @input.password
     @confirm_pass = @input.confirm_pass

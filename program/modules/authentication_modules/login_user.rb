@@ -4,16 +4,15 @@ require_relative '../user_input'
 require_relative '../database'
 require_relative 'validator'
 
-class SignIn
+class LoginUser
   def initialize
     @input = UserInput.new
     @login = false
-    @userdata = Database.read_users
-    @userdata ||= []
+    @userdata = Database.read_users ||= []
   end
 
   def call
-    @input.log_user
+    @input.login_user
     @email = @input.email
     @password = @input.password
     if login_user?

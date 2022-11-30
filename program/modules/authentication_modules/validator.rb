@@ -5,39 +5,40 @@ class Validator
   VALID_PASSWORD = /\A(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}+\z/i
 
   def initialize(password, email, confirm_pass)
-    @userdata = Database.read_users
-    @userdata ||= []
+    @userdata = Database.read_users ||= []
     @password = password
     @email = email
     @confirm_pass = confirm_pass
   end
 
-  def mistake_found(mistake)
-    @mistake_array << mistake
+  def success?
+    success = true
+    @error_array = []
+    error_conditions
+    unless @error_array.empty?
+      error_output
+      success = false
+    end
+    success
   end
 
-  def mistake_output
-    @mistake_array.each do |mistake|
-      puts I18n.t(mistake).colorize(:red)
+  private
+
+  def error_found(error)
+    @error_array << error
+  end
+
+  def error_output
+    @error_array.each do |error|
+      puts I18n.t(error).colorize(:red)
     end
   end
 
-  def mistake_conditions
-    mistake_found(:mistake_mail) unless check_mail
-    mistake_found(:mistake_pass_match) unless password_match?
-    mistake_found(:mistake_pass_valid) unless password_valid?
-    mistake_found(:mistake_mail_exists) if user_exists?
-  end
-
-  def check_user_mistakes
-    mistake = false
-    @mistake_array = []
-    mistake_conditions
-    unless @mistake_array.empty?
-      mistake_output
-      mistake = true
-    end
-    mistake
+  def error_conditions
+    error_found(:mistake_mail) unless check_mail
+    error_found(:mistake_pass_match) unless password_match?
+    error_found(:mistake_pass_valid) unless password_valid?
+    error_found(:mistake_mail_exists) if user_exists?
   end
 
   def password_match?
@@ -53,12 +54,8 @@ class Validator
   end
 
   def user_exists?
-    @exists = false
-    @userdata.each do |record|
-      next unless record['email'] == @email
-
-      @exists = true
+    @userdata.any? do |user|
+      user['email'] == @email
     end
-    @exists
   end
 end

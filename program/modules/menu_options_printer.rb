@@ -14,6 +14,17 @@ class MenuOptionsPrinter
     puts table
   end
 
+  def show_menu_help
+    keys_array = %i[show_menu_help1 show_menu_help2 show_menu_help3 show_menu_help4]
+    rows = []
+    keys_array.each do |value|
+      rows << [I18n.t(value).colorize(:blue)]
+    end
+    table = Terminal::Table.new title: I18n.t(:help_title).colorize(:yellow), rows: rows
+    table.style = { all_separators: true }
+    puts table
+  end
+
   private
 
   def printer(keyword)
