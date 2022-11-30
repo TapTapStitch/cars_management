@@ -36,7 +36,7 @@ class UserInput
     @password = read_input
   end
 
-  def reg_user
+  def register_user
     print_message(:mail)
     @email = read_input
     print_message(:pass)

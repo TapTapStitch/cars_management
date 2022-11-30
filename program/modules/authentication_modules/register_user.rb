@@ -12,7 +12,7 @@ class RegisterUser
   end
 
   def call
-    @input.reg_user
+    @input.register_user
     read_user_input
     @validator = Validator.new(@password, @email, @confirm_pass)
     return unless @validator.success?
