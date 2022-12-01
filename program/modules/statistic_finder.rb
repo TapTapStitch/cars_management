@@ -1,23 +1,26 @@
 # frozen_string_literal: true
 
+require_relative 'database'
+
 class StatisticFinder
-  def initialize(results_array, searches_array, user_input)
-    @result_array = results_array
-    @searches_array = searches_array
+  def initialize(car_finder)
+    @result_array = car_finder.result_array
+    @searches_array = Database.read_searches
     @searches_array ||= []
-    @make = user_input.make
-    @model = user_input.model
-    @year_from = user_input.year_from
-    @year_to = user_input.year_to
-    @price_from = user_input.price_from
-    @price_to = user_input.price_to
+    @make = car_finder.make
+    @model = car_finder.model
+    @year_from = car_finder.year_from
+    @year_to = car_finder.year_to
+    @price_from = car_finder.price_from
+    @price_to = car_finder.price_to
   end
 
-  attr_reader :total_quantity, :request_quantity, :searches_array
+  attr_reader :total_quantity, :request_quantity
 
   def find_statistic
     calculate_searches
-    [@total_quantity, @request_quantity, @searches_array]
+    Database.update_searches(@searches_array)
+    [@total_quantity, @request_quantity]
   end
 
   private

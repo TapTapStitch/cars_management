@@ -8,7 +8,8 @@ class UserInput
     @language = default_language
   end
 
-  attr_reader :make, :model, :year_from, :year_to, :price_from, :price_to, :pre_sort, :pre_direction, :user_input
+  attr_reader :make, :model, :year_from, :year_to, :price_from, :price_to,
+              :pre_sort, :pre_direction, :email, :password, :confirm_pass
 
   def read_users_input
     read_filters_from_user
@@ -25,13 +26,29 @@ class UserInput
   end
 
   def menu_get
-    @user_input = gets.chomp
+    gets.chomp
+  end
+
+  def login_user
+    print_message(:mail)
+    @email = read_input
+    print_message(:pass)
+    @password = read_input
+  end
+
+  def register_user
+    print_message(:mail)
+    @email = read_input
+    print_message(:pass)
+    @password = read_input
+    print_message(:confirm_pass)
+    @confirm_pass = read_input
   end
 
   private
 
   def print_message(translation_key, color = :blue)
-    puts I18n.t(translation_key).colorize(color)
+    print I18n.t(translation_key).colorize(color)
   end
 
   def welcome_message

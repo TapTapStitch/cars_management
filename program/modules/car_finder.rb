@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require_relative 'database'
+require_relative 'user_input'
+
 class CarFinder
   BY_DATE_ADDED = 'date_added'
   BY_PRICE = 'price'
@@ -8,21 +11,15 @@ class CarFinder
   DIRECTION_DESC = 'desc'
   ALLOWED_DIRECTION_OPTIONS = [DIRECTION_ASC, DIRECTION_DESC].freeze
 
-  def initialize(cars_array, user_input)
-    @cars_array = cars_array
-    @make = user_input.make
-    @model = user_input.model
-    @year_from = user_input.year_from
-    @year_to = user_input.year_to
-    @price_from = user_input.price_from
-    @price_to = user_input.price_to
-    @pre_sort = user_input.pre_sort
-    @pre_direction = user_input.pre_direction
+  def initialize
+    @cars_array = Database.read_cars
+    @input = UserInput.new
   end
 
-  attr_reader :result_array
+  attr_reader :result_array, :make, :model, :year_from, :year_to, :price_from, :price_to
 
   def find_car_records
+    load_input
     prepare_filters
     find_car
     sort
@@ -30,6 +27,18 @@ class CarFinder
   end
 
   private
+
+  def load_input
+    @input.read_users_input
+    @make = @input.make
+    @model = @input.model
+    @year_from = @input.year_from
+    @year_to = @input.year_to
+    @price_from = @input.price_from
+    @price_to = @input.price_to
+    @pre_sort = @input.pre_sort
+    @pre_direction = @input.pre_direction
+  end
 
   def empty?(word)
     word.empty? ? 'skip' : word
@@ -82,16 +91,9 @@ class CarFinder
     prepare_filter_value(@price_to, filter <= @price_to.to_i)
   end
 
-  def check_make_model(car_record)
-    check_make(car_record['make']) && check_model(car_record['model'])
-  end
-
-  def check_year(car_record)
-    check_year_from(car_record['year']) && check_year_to(car_record['year'])
-  end
-
   def match_by_filter?(car_record)
-    check_make_model(car_record) && check_year(car_record) &&
+    check_make(car_record['make']) && check_model(car_record['model']) && check_year_from(car_record['year']) &&
+      check_year_to(car_record['year']) &&
       check_price_from(car_record['price']) && check_price_to(car_record['price'])
   end
 

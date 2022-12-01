@@ -5,6 +5,7 @@ require 'date'
 require 'i18n'
 require 'terminal-table'
 require 'colorize'
+require 'bcrypt'
 
 require_relative 'modules/database'
 require_relative 'modules/user_input'
@@ -13,68 +14,80 @@ require_relative 'modules/statistic_finder'
 require_relative 'modules/results_printer'
 require_relative 'modules/cars_printer'
 require_relative 'modules/menu_options_printer'
+require_relative 'modules/authentication'
 
 class CarsManagement
   MENU_OPTIONS_MAPPER = {
-    '1' => :find_car,
-    '2' => :print_all_cars,
-    '3' => :show_menu_help,
-    '4' => :exit_program
+    'find car' => :find_car,
+    'print cars' => :print_all_cars,
+    'log in' => :login_user,
+    'sign up' => :register_user,
+    'log out' => :log_out,
+    'help' => :show_menu_help,
+    'exit' => :exit_program
   }.freeze
 
   def initialize
-    @db = Database.new
-    @input = UserInput.new
-    @menu_printer = MenuOptionsPrinter.new
+    @authentication = Authentication.new
+    @login = false
   end
 
   def call
-    @input.language_input
+    UserInput.new.language_input
     menu_call
   end
 
   private
 
   def find_car
-    cars_array = @db.read_cars
-    searches_array = @db.read_searches
-    @input.read_users_input
-    car_finder = CarFinder.new(cars_array, @input)
-    result_array = car_finder.find_car_records
-    statistic = StatisticFinder.new(result_array, searches_array, @input)
+    car_finder = CarFinder.new
+    car_finder.find_car_records
+    statistic = StatisticFinder.new(car_finder)
     statistic.find_statistic
-    @db.update_searches(statistic.searches_array)
     ResultsPrinter.new(statistic, car_finder).output_results
   end
 
-  def print_all_cars
-    cars_array = @db.read_cars
-    CarsPrinter.new(cars_array).output_cars
+  def log_out
+    return unless @login
+
+    @authentication.log_out
+    @login = @authentication.login
   end
 
-  def show_menu_help
-    puts I18n.t(:menu_show_help).colorize(:blue)
+  def menu_call_condition
+    @login = @authentication.login
+    MenuOptionsPrinter.new.show_menu_options(@login)
   end
 
-  def exit_program
-    puts I18n.t(:menu_show_exit).colorize(:red)
+  def login_user
+    @authentication.login_user unless @login
   end
 
-  def menu_options
-    @menu_printer.show_menu_options
-    @input.menu_get
+  def register_user
+    @authentication.register_user unless @login
+  end
+
+  def menu_case # rubocop:disable Metrics/CyclomaticComplexity
+    case MENU_OPTIONS_MAPPER[gets.chomp]
+    when :find_car then find_car
+    when :print_all_cars then CarsPrinter.new.output_cars
+    when :login_user then login_user
+    when :register_user then register_user
+    when :log_out then log_out
+    when :show_menu_help then MenuOptionsPrinter.new.show_menu_help
+    when :exit_program then exit_program
+    end
   end
 
   def menu_call
     loop do
-      menu_options
-      case MENU_OPTIONS_MAPPER[@input.user_input]
-      when :find_car then find_car
-      when :print_all_cars then print_all_cars
-      when :show_menu_help then show_menu_help
-      when :exit_program then break
-      end
+      menu_call_condition
+      menu_case
     end
-    exit_program
+  end
+
+  def exit_program
+    puts I18n.t(:menu_show_exit).colorize(:red)
+    exit
   end
 end
