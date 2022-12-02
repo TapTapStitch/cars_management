@@ -11,6 +11,8 @@ class RegisterUser
     @userdata = Database.read_users ||= []
   end
 
+  attr_reader :email
+
   def call
     @input.register_user
     read_user_input

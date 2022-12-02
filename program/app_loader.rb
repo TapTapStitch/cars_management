@@ -23,6 +23,7 @@ class CarsManagement
     'log in' => :login_user,
     'sign up' => :register_user,
     'log out' => :log_out,
+    'my searches' => :user_searches,
     'help' => :show_menu_help,
     'exit' => :exit_program
   }.freeze
@@ -43,7 +44,7 @@ class CarsManagement
     car_finder = CarFinder.new
     car_finder.find_car_records
     statistic = StatisticFinder.new(car_finder)
-    statistic.find_statistic
+    statistic.find_statistic(@authentication.user_email)
     ResultsPrinter.new(statistic, car_finder).output_results
   end
 
@@ -67,6 +68,10 @@ class CarsManagement
     @authentication.register_user unless @login
   end
 
+  def user_searches
+    @authentication.user_searches if @login
+  end
+
   def menu_case # rubocop:disable Metrics/CyclomaticComplexity
     case MENU_OPTIONS_MAPPER[gets.chomp]
     when :find_car then find_car
@@ -74,6 +79,7 @@ class CarsManagement
     when :login_user then login_user
     when :register_user then register_user
     when :log_out then log_out
+    when :user_searches then user_searches
     when :show_menu_help then MenuOptionsPrinter.new.show_menu_help
     when :exit_program then exit_program
     end
