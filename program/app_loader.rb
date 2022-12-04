@@ -44,7 +44,8 @@ class CarsManagement
     car_finder = CarFinder.new
     car_finder.find_car_records
     statistic = StatisticFinder.new(car_finder)
-    statistic.find_statistic(@authentication.user_email)
+    statistic.find_statistic
+    @authentication.create_user_searches(car_finder) if @login
     ResultsPrinter.new(statistic, car_finder).output_results
   end
 

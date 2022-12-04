@@ -29,6 +29,10 @@ class Authentication
     @user_searches.call(@login, @user_email)
   end
 
+  def create_user_searches(car_finder)
+    @user_searches.create_user_searches(car_finder, @user_email)
+  end
+
   def log_out
     puts I18n.t(:log_out_massage).colorize(:red)
     @login = false

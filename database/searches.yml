@@ -1,37 +1,25 @@
 ---
-- total_quantity: 2
-  requests_quantity: 3
-  request_make: Audi
-  request_model: skip
-  request_year_from: skip
-  request_year_to: skip
-  request_price_from: skip
-  request_price_to: skip
-  user_email: ''
-- total_quantity: 2
-  requests_quantity: 2
-  request_make: Audi
-  request_model: skip
-  request_year_from: skip
-  request_year_to: skip
-  request_price_from: skip
-  request_price_to: skip
-  user_email: zubikkraft@gmail.com
 - total_quantity: 1
-  requests_quantity: 1
+  requests_quantity: 4
   request_make: Audi
   request_model: A4
   request_year_from: skip
   request_year_to: skip
   request_price_from: skip
   request_price_to: skip
-  user_email: zubikkraft@gmail.com
-- total_quantity: 1
+- total_quantity: 2
   requests_quantity: 1
-  request_make: Renault
+  request_make: Audi
   request_model: skip
   request_year_from: skip
   request_year_to: skip
   request_price_from: skip
   request_price_to: skip
-  user_email: zubikkraft@gmail.com
+- total_quantity: 2
+  requests_quantity: 1
+  request_make: BMW
+  request_model: skip
+  request_year_from: skip
+  request_year_to: skip
+  request_price_from: skip
+  request_price_to: skip

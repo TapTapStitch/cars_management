@@ -17,19 +17,13 @@ class StatisticFinder
 
   attr_reader :total_quantity, :request_quantity
 
-  def find_statistic(user_email)
-    user_email(user_email)
+  def find_statistic
     calculate_searches
     Database.update_searches(@searches_array)
     [@total_quantity, @request_quantity]
   end
 
   private
-
-  def user_email(user_email)
-    @user_email = user_email
-    @user_email ||= ''
-  end
 
   def check_request_make(filter)
     filter['request_make'] == @make
@@ -67,13 +61,9 @@ class StatisticFinder
     check_request_price_from(filter) && check_request_price_to(filter)
   end
 
-  def check_request_user(filter)
-    filter['user_email'] == @user_email
-  end
-
   def check_request_match_by_filter(filter)
     check_request_make_model(filter) && check_request_year(filter) &&
-      check_request_price(filter) && check_request_user(filter)
+      check_request_price(filter)
   end
 
   def find_record
@@ -108,7 +98,6 @@ class StatisticFinder
     @search_request['request_year_to'] = @year_to
     @search_request['request_price_from'] = @price_from
     @search_request['request_price_to'] = @price_to
-    @search_request['user_email'] = @user_email
   end
 
   def find_total_quantity
