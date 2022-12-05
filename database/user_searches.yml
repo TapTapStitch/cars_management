@@ -1,22 +1,8 @@
 ---
-- user_email: zubikkraft@gmail.com
-  make: Audi
+- make: Audi
   model: A4
   year_from: skip
   year_to: skip
   price_from: skip
   price_to: skip
-- user_email: zubikkraft@gmail.com
-  make: Audi
-  model: skip
-  year_from: skip
-  year_to: skip
-  price_from: skip
-  price_to: skip
-- user_email: zubikkraft@gmail.com
-  make: BMW
-  model: skip
-  year_from: skip
-  year_to: skip
-  price_from: skip
-  price_to: skip
+  user_email: zubikkraft@gmail.com
