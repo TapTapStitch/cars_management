@@ -12,7 +12,6 @@ class CarFinder
   ALLOWED_DIRECTION_OPTIONS = [DIRECTION_ASC, DIRECTION_DESC].freeze
 
   def initialize
-    @cars_array = Database.read_cars
     @input = UserInput.new
   end
 
@@ -24,6 +23,11 @@ class CarFinder
     find_car
     sort
     @result_array
+  end
+
+  def to_h
+    { 'make' => @make, 'model' => @model, 'year_from' => @year_from, 'year_to' => @year_to,
+      'price_from' => @price_from, 'price_to' => @price_to }
   end
 
   private
@@ -93,13 +97,12 @@ class CarFinder
 
   def match_by_filter?(car_record)
     check_make(car_record['make']) && check_model(car_record['model']) && check_year_from(car_record['year']) &&
-      check_year_to(car_record['year']) &&
-      check_price_from(car_record['price']) && check_price_to(car_record['price'])
+      check_year_to(car_record['year']) && check_price_from(car_record['price']) && check_price_to(car_record['price'])
   end
 
   def find_car
     @result_array = []
-    @cars_array.each do |car_record|
+    Database.read_cars.each do |car_record|
       @result_array << car_record if match_by_filter?(car_record)
     end
   end
@@ -120,10 +123,8 @@ class CarFinder
 
   def sort
     case @sort
-    when BY_PRICE
-      price_sort
-    when BY_DATE_ADDED
-      date_added_sort
+    when BY_PRICE then price_sort
+    when BY_DATE_ADDED then date_added_sort
     end
   end
 end

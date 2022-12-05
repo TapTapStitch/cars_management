@@ -11,6 +11,8 @@ class LoginUser
     @userdata = Database.read_users ||= []
   end
 
+  attr_reader :email
+
   def call
     @input.login_user
     @email = @input.email

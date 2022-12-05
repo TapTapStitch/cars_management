@@ -48,5 +48,7 @@ class MenuOptionsPrinter
   def add_elements
     @options_array.insert(2, 'log out')
     @keys_array.insert(2, :log_out)
+    @options_array.insert(3, 'my searches')
+    @keys_array.insert(3, :user_searches)
   end
 end

@@ -4,6 +4,7 @@ class Database
   PATH_TO_DATABASE = 'database/db.yml'
   PATH_TO_SEARCHES = 'database/searches.yml'
   PATH_TO_USERS_FILE = 'database/users.yml'
+  PATH_TO_USER_SEARCHES = 'database/user_searches.yml'
 
   def self.read_cars
     YAML.safe_load(File.read(PATH_TO_DATABASE))
@@ -23,5 +24,13 @@ class Database
 
   def self.update_users(userdata)
     File.write(PATH_TO_USERS_FILE, userdata.to_yaml)
+  end
+
+  def self.read_user_searches
+    YAML.unsafe_load(File.read(PATH_TO_USER_SEARCHES))
+  end
+
+  def self.update_user_searches(user_searches)
+    File.write(PATH_TO_USER_SEARCHES, user_searches.to_yaml)
   end
 end

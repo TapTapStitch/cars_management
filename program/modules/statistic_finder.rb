@@ -62,7 +62,8 @@ class StatisticFinder
   end
 
   def check_request_match_by_filter(filter)
-    check_request_make_model(filter) && check_request_year(filter) && check_request_price(filter)
+    check_request_make_model(filter) && check_request_year(filter) &&
+      check_request_price(filter)
   end
 
   def find_record
