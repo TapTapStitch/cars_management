@@ -12,6 +12,7 @@ end
 
 task :add_record do
   data = YAML.safe_load(File.read('database/db.yml'))
+  data ||= []
   record = {}
   record['id'] = FFaker::Vehicle.vin
   record['make'] = FFaker::Vehicle.make
@@ -30,6 +31,7 @@ end
 task :add_records do
   amount = ARGV.last
   data = YAML.safe_load(File.read('database/db.yml'))
+  data ||= []
   amount.to_i.times do
     record = {}
     record['id'] = FFaker::Vehicle.vin
