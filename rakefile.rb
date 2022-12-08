@@ -7,15 +7,16 @@ def today
   date = Date.today
   "#{date.day}/#{date.month}/#{date.year}"
 end
+
 def create_record
   id = FFaker::Vehicle.vin
   make = FFaker::Vehicle.make
   model = FFaker::Vehicle.model
-  year = FFaker::Vehicle.year
-  odometer = FFaker::Random.rand(0..10_000)
-  price = FFaker::Random.rand(0..1000)
+  year = FFaker::Vehicle.year.to_i
+  odometer = FFaker::Random.rand(0..10_000).to_i
+  price = FFaker::Random.rand(0..1000).to_i
   description = FFaker::Vehicle.mfg_color
-  { 'id' => id, 'make' => make, 'model' => model, 'year' => year.to_i, 'odometer' => odometer.to_i, 'price' => price.to_i,
+  { 'id' => id, 'make' => make, 'model' => model, 'year' => year, 'odometer' => odometer, 'price' => price,
     'description' => description, 'date_added' => today }
 end
 
