@@ -2,7 +2,11 @@
 
 require 'ffaker'
 require 'yaml'
-
+require 'date'
+def today
+  date = Date.today
+  "#{date.day}/#{date.month}/#{date.year}"
+end
 def create_record
   id = FFaker::Vehicle.vin
   make = FFaker::Vehicle.make
@@ -11,9 +15,8 @@ def create_record
   odometer = FFaker::Random.rand(0..10_000)
   price = FFaker::Random.rand(0..1000)
   description = FFaker::Vehicle.mfg_color
-  date_added = FFaker::Time.date.to_s.tr!('-', '/')
-  { 'id' => id, 'make' => make, 'model' => model, 'year' => year, 'odometer' => odometer, 'price' => price,
-    'description' => description, 'date_added' => date_added }
+  { 'id' => id, 'make' => make, 'model' => model, 'year' => year.to_i, 'odometer' => odometer.to_i, 'price' => price.to_i,
+    'description' => description, 'date_added' => today }
 end
 
 task :clear_database do
