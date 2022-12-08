@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require_relative 'rake/create_record'
 require_relative 'program/modules/database'
 
