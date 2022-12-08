@@ -8,8 +8,7 @@ class LoginUser
   def initialize
     @input = UserInput.new
     @login = false
-    @userdata = Database.read_users
-    @userdata ||= []
+    @userdata = Database.read_users || []
   end
 
   attr_reader :email

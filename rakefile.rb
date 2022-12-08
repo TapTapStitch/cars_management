@@ -1,24 +1,7 @@
 # frozen_string_literal: true
 
-require 'ffaker'
-require 'yaml'
-require 'date'
-def today
-  date = Date.today
-  "#{date.day}/#{date.month}/#{date.year}"
-end
-
-def create_record
-  id = FFaker::Vehicle.vin
-  make = FFaker::Vehicle.make
-  model = FFaker::Vehicle.model
-  year = FFaker::Vehicle.year.to_i
-  odometer = FFaker::Random.rand(0..10_000).to_i
-  price = FFaker::Random.rand(0..1000).to_i
-  description = FFaker::Vehicle.mfg_color
-  { 'id' => id, 'make' => make, 'model' => model, 'year' => year, 'odometer' => odometer, 'price' => price,
-    'description' => description, 'date_added' => today }
-end
+require_relative 'rake/create_record'
+require_relative 'program/modules/database'
 
 task :clear_database do
   open('database/db.yml', File::TRUNC)
@@ -28,21 +11,19 @@ task :clear_database do
 end
 
 task :add_record do
-  data = YAML.safe_load(File.read('database/db.yml'))
-  data ||= []
-  data << create_record
-  File.write('database/db.yml', data.to_yaml)
+  data = Database.read_cars || []
+  data << CreateRecord.call
+  Database.update_cars(data)
   puts 'Done'
 end
 
 task :add_records do
   amount = ARGV.last
-  data = YAML.safe_load(File.read('database/db.yml'))
-  data ||= []
+  data = Database.read_cars || []
   amount.to_i.times do
-    data << create_record
+    data << CreateRecord.call
   end
-  File.write('database/db.yml', data.to_yaml)
+  Database.update_cars(data)
   task amount.to_i do
     puts 'Done'
   end
