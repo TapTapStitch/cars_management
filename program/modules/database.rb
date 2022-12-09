@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'yaml'
+
 class Database
   PATH_TO_DATABASE = 'database/db.yml'
   PATH_TO_SEARCHES = 'database/searches.yml'
@@ -8,6 +10,10 @@ class Database
 
   def self.read_cars
     YAML.safe_load(File.read(PATH_TO_DATABASE))
+  end
+
+  def self.update_cars(data)
+    File.write(PATH_TO_DATABASE, data.to_yaml)
   end
 
   def self.read_searches
