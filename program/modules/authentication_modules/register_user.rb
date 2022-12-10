@@ -38,6 +38,7 @@ class RegisterUser
     @new_user['email'] = @email
     crypted_pass = BCrypt::Password.create(@password)
     @new_user['password'] = crypted_pass.to_s
+    @new_user['status'] = 'User'
     @userdata << @new_user
   end
 

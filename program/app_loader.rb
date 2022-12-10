@@ -15,6 +15,7 @@ require_relative 'modules/cars_printer'
 require_relative 'modules/menu_options_printer'
 require_relative 'modules/authentication'
 require_relative 'modules/authentication_modules/user_searches'
+require_relative 'modules/administrator'
 
 class CarsManagement
   MENU_OPTIONS_MAPPER = {
@@ -25,12 +26,16 @@ class CarsManagement
     'log out' => :log_out,
     'my searches' => :user_searches,
     'help' => :show_menu_help,
-    'exit' => :exit_program
+    'exit' => :exit_program,
+    'create adv' => :create_adv,
+    'update adv' => :update_adv,
+    'delete adv' => :delete_adv
   }.freeze
 
   def initialize
     @authentication = Authentication.new
     @login = false
+    @admin = false
   end
 
   def call
@@ -54,12 +59,14 @@ class CarsManagement
 
     @authentication.log_out
     @login = @authentication.login
+    @admin = @authentication.admin
   end
 
   def menu_call_condition
     @login = @authentication.login
+    @admin = @authentication.admin
     @user_email = @authentication.user_email
-    MenuOptionsPrinter.new.show_menu_options(@login)
+    MenuOptionsPrinter.new.show_menu_options(@login, @admin)
   end
 
   def login_user
@@ -74,7 +81,20 @@ class CarsManagement
     UserSearches.new.call(@login, @user_email) if @login
   end
 
-  def menu_case # rubocop:disable Metrics/CyclomaticComplexity
+  def create_adv
+    Administrator.new.create_adv if @admin
+  end
+
+  def update_adv
+    Administrator.new.update_adv if @admin
+  end
+
+  def delete_adv
+    Administrator.new.delete_adv if @admin
+  end
+
+  # rubocop:disable all
+  def menu_case
     case MENU_OPTIONS_MAPPER[gets.chomp]
     when :find_car then find_car
     when :print_all_cars then CarsPrinter.new.output_cars
@@ -82,11 +102,15 @@ class CarsManagement
     when :register_user then register_user
     when :log_out then log_out
     when :user_searches then user_searches
+    when :create_adv then create_adv
+    when :update_adv then update_adv
+    when :delete_adv then delete_adv
     when :show_menu_help then MenuOptionsPrinter.new.show_menu_help
     when :exit_program then exit_program
     end
   end
 
+  # rubocop:enable all
   def menu_call
     loop do
       menu_call_condition

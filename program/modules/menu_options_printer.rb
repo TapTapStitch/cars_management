@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 class MenuOptionsPrinter
-  def show_menu_options(login)
+  def show_menu_options(login, admin)
     @options_array = ['find car', 'print cars', 'log in', 'sign up', 'help', 'exit']
     @keys_array = %i[menu_search_car menu_show_car log_in sign_up menu_help menu_exit]
-    check_for_login(login)
+    check_for_login(login, admin)
     rows = []
     @keys_array.each_with_index do |value, index|
       rows << [@options_array[index], printer(value)]
@@ -31,11 +31,14 @@ class MenuOptionsPrinter
     I18n.t(keyword).colorize(:light_yellow)
   end
 
-  def check_for_login(login)
+  def check_for_login(login, admin)
     return unless login
 
     remove_elements
-    add_elements
+    add_user_elements
+    return unless admin
+
+    add_admin_elements
   end
 
   def remove_elements
@@ -45,10 +48,19 @@ class MenuOptionsPrinter
     @keys_array.delete(:sign_up)
   end
 
-  def add_elements
+  def add_user_elements
     @options_array.insert(2, 'log out')
     @keys_array.insert(2, :log_out)
     @options_array.insert(3, 'my searches')
     @keys_array.insert(3, :user_searches)
+  end
+
+  def add_admin_elements
+    @options_array.insert(4, 'create adv ')
+    @keys_array.insert(4, :create_adv)
+    @options_array.insert(5, 'update adv ')
+    @keys_array.insert(5, :update_adv)
+    @options_array.insert(6, 'delete adv ')
+    @keys_array.insert(6, :delete_adv)
   end
 end

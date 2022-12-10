@@ -8,10 +8,11 @@ class LoginUser
   def initialize
     @input = UserInput.new
     @login = false
+    @admin = false
     @userdata = Database.read_users || []
   end
 
-  attr_reader :email
+  attr_reader :email, :admin
 
   def call
     @input.login_user
@@ -29,6 +30,7 @@ class LoginUser
 
   def confirmation
     puts "#{I18n.t(:sign_confirm)}#{@email}!".colorize(:green)
+    @admin = true if @status == 'Admin'
     @login = true
   end
 
@@ -43,6 +45,7 @@ class LoginUser
 
       @exists_user_mail = record['email']
       @exists_user_pass = BCrypt::Password.new(record['password'])
+      @status = record['status']
       @exists = true
     end
   end
