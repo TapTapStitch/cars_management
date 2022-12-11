@@ -8,12 +8,12 @@ class RegisterUser
   def initialize
     @input = UserInput.new
     @login = false
-    @userdata = Database.read_users || []
   end
 
   attr_reader :email
 
   def call
+    @userdata = Database.read_users || []
     @input.register_user
     read_user_input
     @validator = Validator.new(@password, @email, @confirm_pass)

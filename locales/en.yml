@@ -59,3 +59,6 @@ en:
   delete_success: 'You have successfully deleted the car with id: '
   delete_mistake: 'Attachment doesn’t exist with id: '
   delete_input: 'Enter the id of the advertisement to delete:'
+  input_id: 'Enter the id of the advertisement:'
+  input_params: 'Enter the params of advertisement'
+  update_success: 'You have successfully updated the car with id: '

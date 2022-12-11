@@ -2,6 +2,8 @@
 
 require_relative 'database'
 require_relative 'admin_modules/admin_input'
+require_relative 'admin_modules/create_adv'
+require_relative 'admin_modules/update_adv'
 
 class Administrator
   def initialize
@@ -11,7 +13,9 @@ class Administrator
 
   def create_adv; end
 
-  def update_adv; end
+  def update_adv
+    UpdateAdv.new.call(@input, @cars_data)
+  end
 
   def delete_adv
     @id_to_delete = @input.read_id_to_delete

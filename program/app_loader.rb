@@ -82,15 +82,15 @@ class CarsManagement
   end
 
   def create_adv
-    Administrator.new.create_adv if @admin
+    Administrator.new.create_adv
   end
 
   def update_adv
-    Administrator.new.update_adv if @admin
+    Administrator.new.update_adv
   end
 
   def delete_adv
-    Administrator.new.delete_adv if @admin
+    Administrator.new.delete_adv
   end
 
   # rubocop:disable all

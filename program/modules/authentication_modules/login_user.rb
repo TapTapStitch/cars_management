@@ -9,12 +9,12 @@ class LoginUser
     @input = UserInput.new
     @login = false
     @admin = false
-    @userdata = Database.read_users || []
   end
 
   attr_reader :email, :admin
 
   def call
+    @userdata = Database.read_users || []
     @input.login_user
     @email = @input.email
     @password = @input.password
