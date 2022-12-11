@@ -23,6 +23,7 @@ class UpdateAdv
       next unless record['id'] == @id
 
       rewrite(record, input)
+      record['description'] = input.description unless input.description.empty?
     end
     puts (I18n.t(:update_success) + @id.to_s).colorize(:green)
     Database.update_cars(@cars_data)
@@ -37,11 +38,8 @@ class UpdateAdv
   def rewrite(record, input)
     record['make'] = input.make
     record['model'] = input.model
-    record['year'] = input.year
-    record['odometer'] = input.odometer
-    record['price'] = input.price
-    unless input.description.empty?
-      record['description'] = input.description
-    end
+    record['year'] = input.year.to_i
+    record['odometer'] = input.odometer.to_i
+    record['price'] = input.price.to_i
   end
 end

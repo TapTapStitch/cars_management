@@ -15,21 +15,29 @@ class AdminInput
 
   def read_car_params
     puts I18n.t(:input_params).colorize(:blue)
+    read_make_model
+    read_y_o_p_d
+  end
+
+  private
+
+  def read_make_model
     print_message(:make)
     @make = read_input
     print_message(:model)
     @model = read_input
+  end
+
+  def read_y_o_p_d
     print_message(:year)
-    @year = read_input.to_i
+    @year = read_input
     print_message(:odometer)
-    @odometer = read_input.to_i
+    @odometer = read_input
     print_message(:price)
-    @price = read_input.to_i
+    @price = read_input
     print_message(:description)
     @description = read_input
   end
-
-  private
 
   def read_input
     gets.chomp

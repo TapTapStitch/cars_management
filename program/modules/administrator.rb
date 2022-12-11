@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'date'
+require 'ffaker'
 require_relative 'database'
 require_relative 'admin_modules/admin_input'
 require_relative 'admin_modules/create_adv'
@@ -7,11 +9,13 @@ require_relative 'admin_modules/update_adv'
 
 class Administrator
   def initialize
-    @cars_data = Database.read_cars
+    @cars_data = Database.read_cars || []
     @input = AdminInput.new
   end
 
-  def create_adv; end
+  def create_adv
+    CreateAdv.new.call(@input, @cars_data)
+  end
 
   def update_adv
     UpdateAdv.new.call(@input, @cars_data)
