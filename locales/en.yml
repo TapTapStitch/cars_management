@@ -21,7 +21,7 @@ en:
   description: 'Description:'
   date_added: 'Date added:'
   welcome_message: 'Hello! Welcome to Cars Searcher'
-  menu_title: 'Enter the number of selected option'
+  menu_title: 'Enter the name of selected option'
   menu_search_car: 'Search a car'
   menu_show_car: 'Show all cars'
   menu_help: 'Help'
@@ -68,3 +68,4 @@ en:
   mistake_odometer: 'Mistake in odometer'
   mistake_price: 'Mistake in price'
   create_success: 'You have successfully created the car with id: '
+  register_help: 'Password should have 1 Capital letter, 2 special characters, numbers and from 8 to 20 symbols.'

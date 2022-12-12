@@ -39,6 +39,7 @@ class UserInput
   def register_user
     print_message(:mail)
     @email = read_input
+    puts I18n.t(:register_help).colorize(:blue)
     print_message(:pass)
     @password = read_input
     print_message(:confirm_pass)
