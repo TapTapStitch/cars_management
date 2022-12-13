@@ -34,6 +34,7 @@ class CarsManagement
 
   def initialize
     @auth = Authentication.new
+    @user = nil
   end
 
   def call
@@ -53,38 +54,45 @@ class CarsManagement
   end
 
   def log_out
-    return unless @auth.login
+    return if @user.nil?
 
-    @auth.log_out
-  end
-
-  def menu_call_condition
-    @user_email = @auth.user_email
-    MenuOptionsPrinter.new.show_menu_options({ 'login' => @auth.login, 'admin' => @auth.admin })
+    puts I18n.t(:log_out_massage).colorize(:red)
+    @user = nil
   end
 
   def login_user
-    @auth.login_user unless @auth.login
+    @user = @auth.login_user if @user.nil?
   end
 
   def register_user
-    @auth.register_user unless @auth.login
+    @user = @auth.register_user if @user.nil?
   end
 
   def user_searches
-    UserSearches.new.call(@auth.login, @user_email) if @auth.login
+    return if @user.nil?
+
+    UserSearches.new.call(@user)
   end
 
   def create_adv
-    Advertisement.new.create_adv if @auth.admin
+    return if @user.nil?
+    return unless @user.role == 'Admin'
+
+    Advertisement.new.create_adv
   end
 
   def update_adv
-    Advertisement.new.update_adv if @auth.admin
+    return if @user.nil?
+    return unless @user.role == 'Admin'
+
+    Advertisement.new.update_adv
   end
 
   def delete_adv
-    Advertisement.new.delete_adv if @auth.admin
+    return if @user.nil?
+    return unless @user.role == 'Admin'
+
+    Advertisement.new.delete_adv
   end
 
   # rubocop:disable all
@@ -107,7 +115,7 @@ class CarsManagement
   # rubocop:enable all
   def menu_call
     loop do
-      menu_call_condition
+      MenuOptionsPrinter.new.show_menu_options(@user)
       menu_case
     end
   end

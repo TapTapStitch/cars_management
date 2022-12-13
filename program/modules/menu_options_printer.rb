@@ -32,11 +32,11 @@ class MenuOptionsPrinter
   end
 
   def check_for_login(user)
-    return unless user['login']
+    return if user.nil?
 
     remove_elements
     add_user_elements
-    return unless user['admin']
+    return unless user.role == 'Admin'
 
     add_admin_elements
   end

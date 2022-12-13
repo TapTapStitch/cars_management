@@ -7,10 +7,7 @@ require_relative 'validator'
 class RegisterUser
   def initialize
     @input = UserInput.new
-    @login = false
   end
-
-  attr_reader :email, :login
 
   def call
     @userdata = Database.read_users || []
@@ -22,7 +19,7 @@ class RegisterUser
     create_user
     Database.update_users(@userdata)
     confirmation
-    @login
+    @user
   end
 
   private
@@ -44,6 +41,6 @@ class RegisterUser
 
   def confirmation
     puts "#{I18n.t(:sign_confirm)}#{@email}!".colorize(:green)
-    @login = true
+    @user = User.new(@email, 'User')
   end
 end

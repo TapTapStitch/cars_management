@@ -7,11 +7,7 @@ require_relative 'validator'
 class LoginUser
   def initialize
     @input = UserInput.new
-    @login = false
-    @admin = false
   end
-
-  attr_reader :email, :login, :admin
 
   def call
     @userdata = Database.read_users || []
@@ -23,21 +19,14 @@ class LoginUser
     else
       puts I18n.t(:mistake_user).colorize(:red)
     end
-    @login
-  end
-
-  def clear_userdata
-    @login = false
-    @admin = false
-    @email = ''
+    @user
   end
 
   private
 
   def confirmation
     puts "#{I18n.t(:sign_confirm)}#{@email}!".colorize(:green)
-    @admin = true if @role == 'Admin'
-    @login = true
+    @user = User.new(@email, @role)
   end
 
   def login_user?
