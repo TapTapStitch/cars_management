@@ -111,11 +111,3 @@
   price: 10650
   description: Official car
   date_added: 1/10/21
-- id: 9X9GJ2P307M657545
-  make: Audi
-  model: sportback
-  year: 2005
-  odometer: 1000
-  price: 4000
-  description: The best car
-  date_added: 11/12/2022

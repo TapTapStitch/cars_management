@@ -30,5 +30,6 @@ class Authentication
     @login = false
     @admin = false
     @user_email = ''
+    @login_user.clear_userdata
   end
 end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../database'
-require_relative 'admin_validator'
+require_relative 'adv_validator'
 
 class UpdateAdv
   def call(input, cars_data)
@@ -11,7 +11,7 @@ class UpdateAdv
     return unless record_exists?
 
     input.read_car_params
-    return unless AdminValidator.new.call(input)
+    return unless AdvValidator.new.call(input)
 
     rewrite_record(input)
   end

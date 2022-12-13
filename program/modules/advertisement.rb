@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
 require 'date'
-require 'ffaker'
 require_relative 'database'
 require_relative 'admin_modules/admin_input'
 require_relative 'admin_modules/create_adv'
 require_relative 'admin_modules/update_adv'
 
-class Administrator
+class Advertisement
   def initialize
     @cars_data = Database.read_cars || []
     @input = AdminInput.new

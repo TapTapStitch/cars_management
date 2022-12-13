@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AdminValidator
+class AdvValidator
   VALID_MAKE = /\A[a-z][A-Z]{3,50}+\z/i
   VALID_MODEL = /\A[a-z][A-Z]{3,50}+\z/i
   VALID_YEAR = /\A[0-9]+\z/i

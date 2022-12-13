@@ -10,7 +10,7 @@ class RegisterUser
     @login = false
   end
 
-  attr_reader :email
+  attr_reader :email, :login
 
   def call
     @userdata = Database.read_users || []
@@ -38,7 +38,7 @@ class RegisterUser
     @new_user['email'] = @email
     crypted_pass = BCrypt::Password.create(@password)
     @new_user['password'] = crypted_pass.to_s
-    @new_user['status'] = 'User'
+    @new_user['role'] = 'User'
     @userdata << @new_user
   end
 

@@ -11,7 +11,7 @@ class LoginUser
     @admin = false
   end
 
-  attr_reader :email, :admin
+  attr_reader :email, :login, :admin
 
   def call
     @userdata = Database.read_users || []
@@ -26,11 +26,17 @@ class LoginUser
     @login
   end
 
+  def clear_userdata
+    @login = false
+    @admin = false
+    @email = ''
+  end
+
   private
 
   def confirmation
     puts "#{I18n.t(:sign_confirm)}#{@email}!".colorize(:green)
-    @admin = true if @status == 'Admin'
+    @admin = true if @role == 'Admin'
     @login = true
   end
 
@@ -45,7 +51,7 @@ class LoginUser
 
       @exists_user_mail = record['email']
       @exists_user_pass = BCrypt::Password.new(record['password'])
-      @status = record['status']
+      @role = record['role']
       @exists = true
     end
   end

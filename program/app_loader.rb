@@ -15,7 +15,7 @@ require_relative 'modules/cars_printer'
 require_relative 'modules/menu_options_printer'
 require_relative 'modules/authentication'
 require_relative 'modules/authentication_modules/user_searches'
-require_relative 'modules/administrator'
+require_relative 'modules/advertisement'
 
 class CarsManagement
   MENU_OPTIONS_MAPPER = {
@@ -33,9 +33,7 @@ class CarsManagement
   }.freeze
 
   def initialize
-    @authentication = Authentication.new
-    @login = false
-    @admin = false
+    @auth = Authentication.new
   end
 
   def call
@@ -50,47 +48,43 @@ class CarsManagement
     car_finder.find_car_records
     statistic = StatisticFinder.new(car_finder)
     statistic.find_statistic
-    UserSearches.new.create_user_searches(car_finder, @user_email) if @login
+    UserSearches.new.create_user_searches(car_finder, @user_email) if @auth.login
     ResultsPrinter.new(statistic, car_finder).output_results
   end
 
   def log_out
-    return unless @login
+    return unless @auth.login
 
-    @authentication.log_out
-    @login = @authentication.login
-    @admin = @authentication.admin
+    @auth.log_out
   end
 
   def menu_call_condition
-    @login = @authentication.login
-    @admin = @authentication.admin
-    @user_email = @authentication.user_email
-    MenuOptionsPrinter.new.show_menu_options(@login, @admin)
+    @user_email = @auth.user_email
+    MenuOptionsPrinter.new.show_menu_options({ 'login' => @auth.login, 'admin' => @auth.admin })
   end
 
   def login_user
-    @authentication.login_user unless @login
+    @auth.login_user unless @auth.login
   end
 
   def register_user
-    @authentication.register_user unless @login
+    @auth.register_user unless @auth.login
   end
 
   def user_searches
-    UserSearches.new.call(@login, @user_email) if @login
+    UserSearches.new.call(@auth.login, @user_email) if @auth.login
   end
 
   def create_adv
-    Administrator.new.create_adv if @admin
+    Advertisement.new.create_adv if @auth.admin
   end
 
   def update_adv
-    Administrator.new.update_adv if @admin
+    Advertisement.new.update_adv if @auth.admin
   end
 
   def delete_adv
-    Administrator.new.delete_adv if @admin
+    Advertisement.new.delete_adv if @auth.admin
   end
 
   # rubocop:disable all

@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 class MenuOptionsPrinter
-  def show_menu_options(login, admin)
+  def show_menu_options(user)
     @options_array = ['find car', 'print cars', 'log in', 'sign up', 'help', 'exit']
     @keys_array = %i[menu_search_car menu_show_car log_in sign_up menu_help menu_exit]
-    check_for_login(login, admin)
+    check_for_login(user)
     rows = []
     @keys_array.each_with_index do |value, index|
       rows << [@options_array[index], printer(value)]
@@ -31,12 +31,12 @@ class MenuOptionsPrinter
     I18n.t(keyword).colorize(:light_yellow)
   end
 
-  def check_for_login(login, admin)
-    return unless login
+  def check_for_login(user)
+    return unless user['login']
 
     remove_elements
     add_user_elements
-    return unless admin
+    return unless user['admin']
 
     add_admin_elements
   end
