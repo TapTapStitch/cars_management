@@ -76,23 +76,20 @@ class CarsManagement
 
   def create_adv
     return if @user.nil?
-    return unless @user.role == 'Admin'
 
-    Advertisement.new.create_adv
+    Advertisement.new.create_adv if @user.role == 'Admin'
   end
 
   def update_adv
     return if @user.nil?
-    return unless @user.role == 'Admin'
 
-    Advertisement.new.update_adv
+    Advertisement.new.update_adv if @user.role == 'Admin'
   end
 
   def delete_adv
     return if @user.nil?
-    return unless @user.role == 'Admin'
 
-    Advertisement.new.delete_adv
+    Advertisement.new.delete_adv if @user.role == 'Admin'
   end
 
   # rubocop:disable all
