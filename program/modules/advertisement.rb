@@ -17,7 +17,7 @@ class Advertisement
   end
 
   def update_adv
-    UpdateAdv.new.call(@input, @cars_data)
+    UpdateAdv.new(@input, @cars_data).call
   end
 
   def delete_adv

@@ -6,7 +6,6 @@ class AdvValidator
   VALID_YEAR = /\A[0-9]+\z/i
   VALID_ODOMETER = /\A[0-9]+\z/i
   VALID_PRICE = /\A[0-9]+\z/i
-  CURRENT_YEAR = Date.today.year
 
   def call(input)
     if error_catcher(input).empty?
@@ -28,7 +27,7 @@ class AdvValidator
   end
 
   def year_valid?(input)
-    (input.year.match? VALID_YEAR) && (input.year.to_i <= CURRENT_YEAR) && (input.year.to_i > 1900)
+    (input.year.match? VALID_YEAR) && (input.year.to_i <= Date.today.year) && (input.year.to_i > 1900)
   end
 
   def odometer_valid?(input)

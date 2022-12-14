@@ -4,16 +4,20 @@ require_relative '../database'
 require_relative 'adv_validator'
 
 class UpdateAdv
-  def call(input, cars_data)
+  def initialize(input, cars_data)
     @cars_data = cars_data
+    @input = input
     @id = input.read_id
+  end
+
+  def call
     puts (I18n.t(:delete_mistake) + @id.to_s).colorize(:red) unless record_exists?
     return unless record_exists?
 
-    input.read_car_params
-    return unless AdvValidator.new.call(input)
+    @input.read_car_params
+    return unless AdvValidator.new.call(@input)
 
-    rewrite_record(input)
+    rewrite_record(@input)
   end
 
   private

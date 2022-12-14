@@ -69,27 +69,27 @@ class CarsManagement
   end
 
   def user_searches
-    return if @user.nil?
+    return unless @user
 
     UserSearches.new.call(@user)
   end
 
   def create_adv
-    return if @user.nil?
+    return unless @user
 
-    Advertisement.new.create_adv if @user.role == 'Admin'
+    Advertisement.new.create_adv if user_admin?
   end
 
   def update_adv
-    return if @user.nil?
+    return unless @user
 
-    Advertisement.new.update_adv if @user.role == 'Admin'
+    Advertisement.new.update_adv if user_admin?
   end
 
   def delete_adv
-    return if @user.nil?
+    return unless @user
 
-    Advertisement.new.delete_adv if @user.role == 'Admin'
+    Advertisement.new.delete_adv if user_admin?
   end
 
   # rubocop:disable all
@@ -120,5 +120,17 @@ class CarsManagement
   def exit_program
     puts I18n.t(:menu_show_exit).colorize(:red)
     exit
+  end
+
+  def user_admin?
+    return unless @user
+
+    @user.role == 'Admin'
+  end
+
+  def user_user?
+    return unless @user
+
+    @user.role == 'User'
   end
 end
