@@ -13,9 +13,8 @@ class UserSearches
     @searches_array ||= []
   end
 
-  def call(login, user_email)
-    @login = login
-    @user_email = user_email
+  def call(user)
+    @user_email = user.email
     find_user_searches if user_search_exists?
     puts I18n.t(:user_searches_mistake).colorize(:red) unless user_search_exists?
   end

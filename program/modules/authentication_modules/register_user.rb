@@ -7,13 +7,10 @@ require_relative 'validator'
 class RegisterUser
   def initialize
     @input = UserInput.new
-    @login = false
-    @userdata = Database.read_users || []
   end
 
-  attr_reader :email
-
   def call
+    @userdata = Database.read_users || []
     @input.register_user
     read_user_input
     @validator = Validator.new(@password, @email, @confirm_pass)
@@ -22,7 +19,7 @@ class RegisterUser
     create_user
     Database.update_users(@userdata)
     confirmation
-    @login
+    @user
   end
 
   private
@@ -38,11 +35,12 @@ class RegisterUser
     @new_user['email'] = @email
     crypted_pass = BCrypt::Password.create(@password)
     @new_user['password'] = crypted_pass.to_s
+    @new_user['role'] = 'User'
     @userdata << @new_user
   end
 
   def confirmation
     puts "#{I18n.t(:sign_confirm)}#{@email}!".colorize(:green)
-    @login = true
+    @user = User.new(@email, 'User')
   end
 end

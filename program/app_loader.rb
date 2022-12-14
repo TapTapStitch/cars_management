@@ -15,6 +15,7 @@ require_relative 'modules/cars_printer'
 require_relative 'modules/menu_options_printer'
 require_relative 'modules/authentication'
 require_relative 'modules/authentication_modules/user_searches'
+require_relative 'modules/advertisement'
 
 class CarsManagement
   MENU_OPTIONS_MAPPER = {
@@ -25,12 +26,15 @@ class CarsManagement
     'log out' => :log_out,
     'my searches' => :user_searches,
     'help' => :show_menu_help,
-    'exit' => :exit_program
+    'exit' => :exit_program,
+    'create adv' => :create_adv,
+    'update adv' => :update_adv,
+    'delete adv' => :delete_adv
   }.freeze
 
   def initialize
-    @authentication = Authentication.new
-    @login = false
+    @auth = Authentication.new
+    @user = nil
   end
 
   def call
@@ -45,36 +49,51 @@ class CarsManagement
     car_finder.find_car_records
     statistic = StatisticFinder.new(car_finder)
     statistic.find_statistic
-    UserSearches.new.create_user_searches(car_finder, @user_email) if @login
+    UserSearches.new.create_user_searches(car_finder, @user_email) if @auth.login
     ResultsPrinter.new(statistic, car_finder).output_results
   end
 
   def log_out
-    return unless @login
+    return if @user.nil?
 
-    @authentication.log_out
-    @login = @authentication.login
-  end
-
-  def menu_call_condition
-    @login = @authentication.login
-    @user_email = @authentication.user_email
-    MenuOptionsPrinter.new.show_menu_options(@login)
+    puts I18n.t(:log_out_massage).colorize(:red)
+    @user = nil
   end
 
   def login_user
-    @authentication.login_user unless @login
+    @user = @auth.login_user if @user.nil?
   end
 
   def register_user
-    @authentication.register_user unless @login
+    @user = @auth.register_user if @user.nil?
   end
 
   def user_searches
-    UserSearches.new.call(@login, @user_email) if @login
+    return unless @user
+
+    UserSearches.new.call(@user)
   end
 
-  def menu_case # rubocop:disable Metrics/CyclomaticComplexity
+  def create_adv
+    return unless @user
+
+    Advertisement.new.create_adv if user_admin?
+  end
+
+  def update_adv
+    return unless @user
+
+    Advertisement.new.update_adv if user_admin?
+  end
+
+  def delete_adv
+    return unless @user
+
+    Advertisement.new.delete_adv if user_admin?
+  end
+
+  # rubocop:disable all
+  def menu_case
     case MENU_OPTIONS_MAPPER[gets.chomp]
     when :find_car then find_car
     when :print_all_cars then CarsPrinter.new.output_cars
@@ -82,14 +101,18 @@ class CarsManagement
     when :register_user then register_user
     when :log_out then log_out
     when :user_searches then user_searches
+    when :create_adv then create_adv
+    when :update_adv then update_adv
+    when :delete_adv then delete_adv
     when :show_menu_help then MenuOptionsPrinter.new.show_menu_help
     when :exit_program then exit_program
     end
   end
 
+  # rubocop:enable all
   def menu_call
     loop do
-      menu_call_condition
+      MenuOptionsPrinter.new.show_menu_options(@user)
       menu_case
     end
   end
@@ -97,5 +120,11 @@ class CarsManagement
   def exit_program
     puts I18n.t(:menu_show_exit).colorize(:red)
     exit
+  end
+
+  def user_admin?
+    return unless @user
+
+    @user.role == 'Admin'
   end
 end
