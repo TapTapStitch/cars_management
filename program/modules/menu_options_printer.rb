@@ -36,7 +36,7 @@ class MenuOptionsPrinter
 
     remove_elements
     add_user_elements
-    return unless user.role == 'Admin'
+    return unless user_admin?(user)
 
     add_admin_elements
   end
@@ -62,5 +62,11 @@ class MenuOptionsPrinter
     @keys_array.insert(5, :update_adv)
     @options_array.insert(6, 'delete adv ')
     @keys_array.insert(6, :delete_adv)
+  end
+
+  def user_admin?(user)
+    return unless user
+
+    user.role == 'Admin'
   end
 end

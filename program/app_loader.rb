@@ -127,10 +127,4 @@ class CarsManagement
 
     @user.role == 'Admin'
   end
-
-  def user_user?
-    return unless @user
-
-    @user.role == 'User'
-  end
 end
