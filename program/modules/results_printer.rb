@@ -22,7 +22,7 @@ class ResultsPrinter
   end
 
   def print_statistic
-    puts(statistic_table) unless @result_array.length.zero?
+    puts(statistic_table) unless @result_array.empty?
   end
 
   def results_table
@@ -38,6 +38,6 @@ class ResultsPrinter
   end
 
   def print_results
-    puts(results_table) unless @result_array.length.zero?
+    puts(results_table) unless @result_array.empty?
   end
 end
